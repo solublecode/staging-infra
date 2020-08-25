@@ -24,3 +24,7 @@ variable "client_droplet_size" {
     type = string
     default = "s-1vcpu-1gb"
 }
+
+variable "ssh_fingerprint" {
+    type = string
+}
