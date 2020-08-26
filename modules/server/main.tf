@@ -20,8 +20,8 @@ resource "digitalocean_droplet" "server" {
       "sudo apt-get upgrade",
       "sudo apt-get -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
       "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
-      "sudo apt-get install docker-ce docker-ce-cli containerd.io",
-      "sudo apt install default-jdk",
+      "sudo apt-get -y install docker-ce docker-ce-cli containerd.io",
+      "sudo apt-get -y install default-jdk",
     ]
 
     connection {
