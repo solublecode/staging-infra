@@ -17,6 +17,9 @@ resource "digitalocean_droplet" "bastion" {
     inline = [
       "sudo apt-get update",
       "sudo apt-get upgrade",
+      "sudo apt-get -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
+      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
+      "sudo apt-get install docker-ce docker-ce-cli containerd.io",
     ]
 
     connection {
@@ -26,5 +29,42 @@ resource "digitalocean_droplet" "bastion" {
       host        = self.ipv4_address
       private_key = var.ssh_private_key
     }
+  }
+}
+
+resource "digitalocean_floating_ip" "bastion" {
+  region = var.bastion_droplet_region
+}
+
+resource "digitalocean_floating_ip_assignment" "bastion" {
+  ip_address = digitalocean_floating_ip.bastion.id
+  droplet_id = digitalocean_droplet.bastion.id
+}
+
+resource "digitalocean_firewall" "bastion" {
+  name        = "bastion-fw"
+  droplet_ids = [digitalocean_droplet.bastion.id]
+
+  outbound_rule {
+    protocol              = "icmp"
+    destination_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  outbound_rule {
+    protocol              = "tcp"
+    port_range            = "1-65535"
+    destination_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  outbound_rule {
+    protocol              = "udp"
+    port_range            = "1-65535"
+    destination_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "22"
+    source_addresses = ["0.0.0.0/0", "::/0"]
   }
 }
