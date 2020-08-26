@@ -1,0 +1,9 @@
+region = "ams3"
+server_droplet_count = 3
+client_droplet_count = 2
+server_droplet_size = "s-1vcpu-1gb"
+client_droplet_size = "s-1vcpu-1gb"
+bastion_droplet_size = "s-1vcpu-1gb"
+ssh_key = "solublecode-ssh-key"
+subdomain = "apollo"
+domain_name = "solublecode.dev"
