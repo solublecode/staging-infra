@@ -31,9 +31,8 @@ resource "digitalocean_droplet" "client-01" {
 }
 
 resource "digitalocean_droplet" "client-02" {
-    count = var.client_droplet_count
     image = var.fedora-image 
-    name = "plato-${var.name}-${var.region}-03"
+    name = "plato-${var.name}-${var.region}-3"
     region = var.region
     size = var.client_droplet_size
     ssh_keys = [data.digitalocean_ssh_key.main.id]
