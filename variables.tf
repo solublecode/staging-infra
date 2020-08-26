@@ -40,11 +40,13 @@ variable ssh_key {
 variable subdomain {
     type = string
     description = "The first part of my URL. Ex: the www in www.solublecode.dev"
+    default = "apollo"
 }
 
 variable domain_name {
     type = string
     description = "Domain you have registered and manged by DigitalOcean"
+    default = "solublecode.dev"
 }
 
 variable name {
