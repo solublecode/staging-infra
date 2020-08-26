@@ -27,7 +27,6 @@ resource "digitalocean_droplet" "client-01" {
       type     = "ssh"
       user     = "root"
       timeout  = "2m"
-      agent    = true
       host     = self.ipv4_address
     }
   }
@@ -55,7 +54,6 @@ resource "digitalocean_droplet" "client-02" {
       type     = "ssh"
       user     = "root"
       timeout  = "2m"
-      agent    = true
       host     = self.ipv4_address
     }
   }
