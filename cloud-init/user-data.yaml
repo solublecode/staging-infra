@@ -1,16 +1,8 @@
 #cloud-config
 package_update: true
-package_upgrade: true
-packages:
-    - apt-transport-https
-    - ca-certificates
-    - curl
-    - gnupg-agent
-    - software-properties-common
-    - default-jdk
-runcmd:
-    - [ curl, -fsSL, "https://download.docker.com/linux/ubuntu/gpg", |, sudo, apt-key, add, - ]
 packages:
     - docker-ce
     - docker-ce-cli
     - containerd.io
+    - default-jdk
+package_upgrade: true
