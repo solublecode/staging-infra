@@ -59,7 +59,7 @@ resource "digitalocean_certificate" "web" {
 resource "digitalocean_loadbalancer" "web" {
     name = "server-${var.region}"
     region = var.region
-    droplet_ids = [digitalocean_droplet.server.*.id, digitalocean_droplet.client-01.*.id]
+    droplet_ids = concat(digitalocean_droplet.server.*.id, digitalocean_droplet.client-01.*.id)
     vpc_uuid = digitalocean_vpc.web.id
     redirect_http_to_https = true
     
@@ -91,7 +91,7 @@ resource "digitalocean_loadbalancer" "web" {
 resource "digitalocean_firewall" "web" {
 
     name = "${var.name}-only-vpc-traffic"
-    droplet_ids = [digitalocean_droplet.server.*.id, digitalocean_droplet.client-01.*.id]
+    droplet_ids = concat(digitalocean_droplet.server.*.id, digitalocean_droplet.client-01.*.id)
 
     inbound_rule {
         protocol = "tcp"
