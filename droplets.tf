@@ -58,7 +58,7 @@ resource "digitalocean_certificate" "mapesa" {
 resource "digitalocean_loadbalancer" "mapesa" {
     name = "mapesa-${var.region}-lb"
     region = var.region
-    droplet_ids = concat(digitalocean_droplet.server.*.id, digitalocean_droplet.client-01.*.id)
+    droplet_ids = concat(digitalocean_droplet.server.*.id, digitalocean_droplet.client-01.*.id, [digitalocean_droplet.client-02.id])
     vpc_uuid = digitalocean_vpc.mapesa.id
     redirect_http_to_https = true
     
@@ -90,7 +90,7 @@ resource "digitalocean_loadbalancer" "mapesa" {
 resource "digitalocean_firewall" "mapesa" {
 
     name = "${var.name}-only-vpc-traffic"
-    droplet_ids = concat(digitalocean_droplet.server.*.id, digitalocean_droplet.client-01.*.id, digitalocean_droplet.client-02.id)
+    droplet_ids = concat(digitalocean_droplet.server.*.id, digitalocean_droplet.client-01.*.id, [digitalocean_droplet.client-02.id])
 
     inbound_rule {
         protocol = "tcp"
