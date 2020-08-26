@@ -4,19 +4,18 @@ resource "digitalocean_droplet" "bastion" {
     region = var.region
     size = var.bastion_droplet_size
     ssh_keys = [data.digitalocean_ssh_key.main.id]
-    vpc_uuid = digitalocean_vpc.web.id
+    vpc_uuid = digitalocean_vpc.mapesa.id
     tags = ["solublecode", "bastion"]
-    user_data = file("cloud-init/user-data.yaml")
-    
+
     lifecycle {
         create_before_destroy = true
     }
 }
 
 resource "digitalocean_record" "bastion" {
-    domain = data.digitalocean_domain.web.name
+    domain = data.digitalocean_domain.mapesa.name
     type   = "A"
-    name   = "bastion-${var.name}-${var.region}"
+    name   = "ssh"
     value  = digitalocean_droplet.bastion.ipv4_address
     ttl    = 1800
 }
@@ -34,11 +33,11 @@ resource "digitalocean_firewall" "bastion" {
     outbound_rule {
         protocol = "tcp"
         port_range = "22"
-        destination_addresses = [digitalocean_vpc.web.ip_range]
+        destination_addresses = [digitalocean_vpc.mapesa.ip_range]
     }
 
     outbound_rule {
         protocol = "icmp"
-        destination_addresses = [digitalocean_vpc.web.ip_range]
+        destination_addresses = [digitalocean_vpc.mapesa.ip_range]
     }
 }
