@@ -2,6 +2,7 @@ variable "ssh_fingerprint" {}
 variable "client_droplet_size" {}
 variable "client_droplet_count" {}
 variable "client_droplet_region" {}
+variable "ssh_private_key" {}
 
 resource "digitalocean_droplet" "client-01" {
   image  = "ubuntu-18-04-x64"
@@ -17,6 +18,7 @@ resource "digitalocean_droplet" "client-01" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
+      "sudo apt-get upgrade",
       "sudo apt-get -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
       "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
       "sudo apt-get install docker-ce docker-ce-cli containerd.io",
@@ -24,10 +26,11 @@ resource "digitalocean_droplet" "client-01" {
     ]
 
     connection {
-      type     = "ssh"
-      user     = "root"
-      timeout  = "2m"
-      host     = self.ipv4_address
+      type        = "ssh"
+      user        = "root"
+      timeout     = "2m"
+      host        = self.ipv4_address
+      private_key = var.ssh_private_key
     }
   }
 }
@@ -51,10 +54,11 @@ resource "digitalocean_droplet" "client-02" {
     ]
 
     connection {
-      type     = "ssh"
-      user     = "root"
-      timeout  = "2m"
-      host     = self.ipv4_address
+      type        = "ssh"
+      user        = "root"
+      timeout     = "2m"
+      host        = self.ipv4_address
+      private_key = var.ssh_private_key
     }
   }
 }

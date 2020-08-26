@@ -25,6 +25,13 @@ variable "client_droplet_size" {
     default = "s-1vcpu-1gb"
 }
 
+variable "bastion_droplet_size" {
+    type = string
+    default = "s-1vcpu-1gb"
+}
+
 variable "ssh_fingerprint" {
     type = string
 }
+
+variable "ssh_private_key" {}
