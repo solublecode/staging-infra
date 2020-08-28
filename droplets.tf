@@ -13,6 +13,13 @@ resource "digitalocean_droplet" "server" {
         create_before_destroy = true
     }
 
+    connection {
+        type         = "ssh"
+        user         = "root"
+        host         = self.ipv4_address
+        agent        = true
+    }
+
     # Consul files
     provisioner "file" {
         source      = "${path.root}/scripts/consul/install_consul.sh"
@@ -149,6 +156,13 @@ resource "digitalocean_droplet" "client-01" {
         create_before_destroy = true
     }
 
+    connection {
+        type         = "ssh"
+        user         = "root"
+        host         = self.ipv4_address
+        agent        = true
+    }
+
     # Consul files
     provisioner "file" {
         source      = "${path.root}/scripts/consul/install_consul.sh"
@@ -209,6 +223,13 @@ resource "digitalocean_droplet" "client-02" {
 
     lifecycle {
         create_before_destroy = true
+    }
+
+    connection {
+        type         = "ssh"
+        user         = "root"
+        host         = self.ipv4_address
+        agent        = true
     }
 
     # Consul files
