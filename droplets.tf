@@ -1,13 +1,14 @@
 resource "digitalocean_droplet" "server" {
-    count     = var.server_droplet_count
-    image     = var.ubuntu-image 
-    name      = "socrates-0${count.index + 1}"
-    region    = var.region
-    size      = var.server_droplet_size
-    ssh_keys  = [data.digitalocean_ssh_key.main.id]
-    vpc_uuid  = digitalocean_vpc.mapesa.id
-    tags      = ["solublecode", "server"]
-    user_data = file("cloud-init/ubuntu-user-data.yaml")
+    count      = var.server_droplet_count
+    image      = var.ubuntu-image 
+    name       = "socrates-0${count.index + 1}"
+    region     = var.region
+    size       = var.server_droplet_size
+    ssh_keys   = [data.digitalocean_ssh_key.main.id]
+    vpc_uuid   = digitalocean_vpc.mapesa.id
+    tags       = ["solublecode", "server"]
+    user_data  = file("cloud-init/ubuntu-user-data.yaml")
+    monitoring = true
 
     lifecycle {
         create_before_destroy = true
@@ -143,15 +144,16 @@ resource "null_resource" "wait_for_consul" {
 }
 
 resource "digitalocean_droplet" "client-01" {
-    count     = var.client_droplet_count
-    image     = var.ubuntu-image 
-    name      = "plato-0${count.index + 1}"
-    region    = var.region
-    size      = var.client_droplet_size
-    ssh_keys  = [data.digitalocean_ssh_key.main.id]
-    vpc_uuid  = digitalocean_vpc.mapesa.id
-    tags      = ["solublecode", "client"]
-    user_data = file("cloud-init/ubuntu-user-data.yaml")
+    count      = var.client_droplet_count
+    image      = var.ubuntu-image 
+    name       = "plato-0${count.index + 1}"
+    region     = var.region
+    size       = var.client_droplet_size
+    ssh_keys   = [data.digitalocean_ssh_key.main.id]
+    vpc_uuid   = digitalocean_vpc.mapesa.id
+    tags       = ["solublecode", "client"]
+    user_data  = file("cloud-init/ubuntu-user-data.yaml")
+    monitoring = true
 
     depends_on = [null_resource.wait_for_consul]
 
@@ -216,14 +218,15 @@ resource "digitalocean_droplet" "client-01" {
 }
 
 resource "digitalocean_droplet" "client-02" {
-    image     = var.fedora-image 
-    name      = "plato-03"
-    region    = var.region
-    size      = var.client_droplet_size
-    ssh_keys  = [data.digitalocean_ssh_key.main.id]
-    vpc_uuid  = digitalocean_vpc.mapesa.id
-    tags      = ["solublecode", "client"]
-    user_data = file("cloud-init/fedora-user-data.yaml")
+    image      = var.fedora-image 
+    name       = "plato-03"
+    region     = var.region
+    size       = var.client_droplet_size
+    ssh_keys   = [data.digitalocean_ssh_key.main.id]
+    vpc_uuid   = digitalocean_vpc.mapesa.id
+    tags       = ["solublecode", "client"]
+    user_data  = file("cloud-init/fedora-user-data.yaml")
+    monitoring = true
 
     depends_on = [null_resource.wait_for_consul]
 

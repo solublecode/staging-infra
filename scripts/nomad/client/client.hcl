@@ -2,7 +2,7 @@
 log_level = "DEBUG"
 
 # Setup data dir
-data_dir = "/root/nomad/client"
+data_dir = "/root/nomad"
 
 # Enable the client
 client {
