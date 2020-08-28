@@ -3,7 +3,7 @@ Description=Consul server
 Wants=network-online.target
 After=network-online.target
 [Service]
-ExecStart= /bin/sh -c "consul agent -server -bootstrap-expect=1 -data-dir=/root/consul -node=agent-s-count -bind=$(`ifconfig eth0 | grep 'inet ' | sed 's/\s\s*/ /g' | cut -d' ' -f3 | awk '{ print $1}'`) -enable-script-checks=true -config-file=/root/consul/consul-connect-enable.hcl -config-dir=/etc/consul.d -client=0.0.0.0"
+ExecStart= /bin/sh -c "consul agent -server -bootstrap-expect=1 -data-dir=/root/consul -node=agent-s-count -bind=$(`ifconfig eth0 | grep 'inet ' | sed 's/\s\s*/ /g' | cut -d' ' -f3 | awk '{ print $1}'`) -enable-script-checks=true -config-file=/root/consul-connect-enable.hcl -config-dir=/etc/consul.d -client=0.0.0.0"
 Restart=always
 RestartSec=10
 [Install]
