@@ -70,4 +70,3 @@ variable centos-image {
     type = string
     default = "centos-8-x64"
 }
-
