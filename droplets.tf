@@ -36,18 +36,18 @@ resource "digitalocean_droplet" "server" {
 
     provisioner "file" {
         source      = "${path.root}/scripts/consul/consul-connect-enable.hcl"
-        destination = "$HOME/consul/consul-connect-enable.hcl"
+        destination = "/root/consul/consul-connect-enable.hcl"
     }
 
     # Nomad files
     provisioner "file" {
         source      = "${path.root}/scripts/nomad/server/server.hcl"
-        destination = "$HOME/nomad/server.hcl"
+        destination = "/root/nomad/server.hcl"
     }
 
     provisioner "file" {
         source      = "${path.root}/scripts/nomad/client/client.hcl"
-        destination = "$HOME/nomad/client.hcl"
+        destination = "/root/nomad/client.hcl"
     }
 
     provisioner "file" {
@@ -62,12 +62,12 @@ resource "digitalocean_droplet" "server" {
 
     provisioner "file" {
         source      = "${path.root}/scripts/nomad/jobs/prepare.sh"
-        destination = "$HOME/prepare.sh"
+        destination = "/root/prepare.sh"
     }
 
     provisioner "file" {
         source      = "${path.root}/scripts/vault/vault-config.hcl"
-        destination = "$HOME/vault/vault-config.hcl"
+        destination = "/root/vault/vault-config.hcl"
     }
 
     provisioner "file" {
@@ -122,8 +122,8 @@ resource "digitalocean_droplet" "server" {
         inline = [
             "chmod +x /root/prepare.sh",
             "chmod +x /tmp/install_nomad.sh",
-            "sed -i 's/server_ip/${self.ipv4_address_private}/g' $HOME/nomad/server.hcl",
-            "sed -i 's/server_count/${var.server_droplet_count}/g' $HOME/nomad/server.hcl",
+            "sed -i 's/server_ip/${self.ipv4_address_private}/g' /root/nomad/server.hcl",
+            "sed -i 's/server_count/${var.server_droplet_count}/g' /root/nomad/server.hcl",
             "/tmp/install_nomad.sh server",
         ]
     }
@@ -184,7 +184,7 @@ resource "digitalocean_droplet" "client-01" {
     # Nomad files
     provisioner "file" {
         source      = "${path.root}/scripts/nomad/client/client.hcl"
-        destination = "$HOME/nomad/client.hcl"
+        destination = "/root/nomad/client.hcl"
     }
 
     provisioner "file" {
@@ -256,7 +256,7 @@ resource "digitalocean_droplet" "client-02" {
     # Nomad files
     provisioner "file" {
         source      = "${path.root}/scripts/nomad/client/client.hcl"
-        destination = "$HOME/nomad/client.hcl"
+        destination = "/root/nomad/client.hcl"
     }
 
     provisioner "file" {

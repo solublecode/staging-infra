@@ -1,6 +1,8 @@
 #! /bin/bash
 
 echo "Setting Up Vault on Server\n"
+
+export VAULT_ADDR=http://127.0.0.1:8200
 # init vautl, unseal vault and export root token
 
 if [ $1 == "0" ]; then
