@@ -1,20 +1,24 @@
 #! /bin/bash
 
-echo "Installing Consul on server\n"
+sleep 120 # wait for cloud-init
 
-apt install unzip net-tools
+echo "Installing Consul on server\n"
 
 export IP_ADDR=`ifconfig eth0 | grep 'inet ' | sed 's/\s\s*/ /g' | cut -d' ' -f3 | awk '{ print $1}'`
 export VAULT_ADDR=http://127.0.0.1:8200
 export NOMAD_ADDR=http://$IP_ADDR:4646
 
+printenv IP_ADDR
+printenv VAULT_ADDR
+printenv NOMAD_ADDR
+
 mkdir /etc/consul.d
-mkdir -p $HOME/consul/data
+mkdir -p $HOME/consul
 
 # Setup iptables to allow access to localhost from docker
-sudo sysctl -w net.ipv4.conf.docker0.route_localnet=1
-sudo iptables -t nat -I PREROUTING -i docker0 -d 172.17.0.1 -p tcp -j DNAT --to 127.0.0.1
-sudo iptables -t filter -I INPUT -i docker0 -d 127.0.0.1 -p tcp -j ACCEPT
+# sudo sysctl -w net.ipv4.conf.docker0.route_localnet=1
+# sudo iptables -t nat -I PREROUTING -i docker0 -d 172.17.0.1 -p tcp -j DNAT --to 127.0.0.1
+# sudo iptables -t filter -I INPUT -i docker0 -d 127.0.0.1 -p tcp -j ACCEPT
 
 # Start install of consul and setup
 wget https://releases.hashicorp.com/consul/1.8.3/consul_1.8.3_linux_amd64.zip
