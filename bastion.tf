@@ -1,6 +1,6 @@
 resource "digitalocean_droplet" "bastion" {
     image = var.centos-image 
-    name = "bastion-${var.name}-${var.region}"
+    name = "bastion-${var.name}"
     region = var.region
     size = var.bastion_droplet_size
     ssh_keys = [data.digitalocean_ssh_key.main.id]

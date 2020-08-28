@@ -37,6 +37,11 @@ variable ssh_key {
     description = "Name of SSH Key as it appears in the DigitalOcean dashboard"
 }
 
+variable ssh_private_key {
+    type = string
+    description = "PRIVATE key"
+}
+
 variable subdomain {
     type = string
     description = "The first part of my URL. Ex: the www in www.solublecode.dev"

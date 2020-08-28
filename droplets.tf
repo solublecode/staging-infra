@@ -1,7 +1,7 @@
 resource "digitalocean_droplet" "server" {
     count     = var.server_droplet_count
     image     = var.ubuntu-image 
-    name      = "socrates-${var.name}-0${count.index + 1}"
+    name      = "socrates-0${count.index + 1}"
     region    = var.region
     size      = var.server_droplet_size
     ssh_keys  = [data.digitalocean_ssh_key.main.id]
@@ -14,10 +14,13 @@ resource "digitalocean_droplet" "server" {
     }
 
     connection {
-        type         = "ssh"
-        user         = "root"
-        host         = self.ipv4_address
-        agent        = true
+        type                 = "ssh"
+        user                 = "root"
+        host                 = self.ipv4_address_private
+        private_key          = var.ssh_private_key
+        bastion_user         = "root"
+        bastion_host         = digitalocean_droplet.bastion.ipv4_address
+        bastion_private_key  = var.ssh_private_key
     }
 
     # Consul files
@@ -142,7 +145,7 @@ resource "null_resource" "wait_for_consul" {
 resource "digitalocean_droplet" "client-01" {
     count     = var.client_droplet_count
     image     = var.ubuntu-image 
-    name      = "plato-${var.name}-0${count.index + 1}"
+    name      = "plato-0${count.index + 1}"
     region    = var.region
     size      = var.client_droplet_size
     ssh_keys  = [data.digitalocean_ssh_key.main.id]
@@ -157,10 +160,13 @@ resource "digitalocean_droplet" "client-01" {
     }
 
     connection {
-        type         = "ssh"
-        user         = "root"
-        host         = self.ipv4_address
-        agent        = true
+        type                 = "ssh"
+        user                 = "root"
+        host                 = self.ipv4_address_private
+        private_key          = var.ssh_private_key
+        bastion_user         = "root"
+        bastion_host         = digitalocean_droplet.bastion.ipv4_address
+        bastion_private_key  = var.ssh_private_key
     }
 
     # Consul files
@@ -211,7 +217,7 @@ resource "digitalocean_droplet" "client-01" {
 
 resource "digitalocean_droplet" "client-02" {
     image     = var.fedora-image 
-    name      = "plato-${var.name}-03"
+    name      = "plato-03"
     region    = var.region
     size      = var.client_droplet_size
     ssh_keys  = [data.digitalocean_ssh_key.main.id]
@@ -226,10 +232,13 @@ resource "digitalocean_droplet" "client-02" {
     }
 
     connection {
-        type         = "ssh"
-        user         = "root"
-        host         = self.ipv4_address
-        agent        = true
+        type                 = "ssh"
+        user                 = "root"
+        host                 = self.ipv4_address_private
+        private_key          = var.ssh_private_key
+        bastion_user         = "root"
+        bastion_host         = digitalocean_droplet.bastion.ipv4_address
+        bastion_private_key  = var.ssh_private_key
     }
 
     # Consul files
