@@ -90,7 +90,7 @@ resource "digitalocean_droplet" "server" {
         inline = [
             "sed -i 's/count/${count.index + 1}/g' /etc/systemd/system/consul-server.service",
             "chmod +x /tmp/install_consul.sh",
-            "bash /tmp/install_consul.sh server ${self.ipv4_address_private}",
+            "/tmp/install_consul.sh server ${self.ipv4_address_private}",
         ]
     }
 
@@ -105,7 +105,7 @@ resource "digitalocean_droplet" "server" {
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/install_vault.sh",
-            "bash /tmp/install_vault.sh server",
+            "/tmp/install_vault.sh server",
         ]
     }
 
@@ -113,7 +113,7 @@ resource "digitalocean_droplet" "server" {
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/setup_vault.sh",
-            "bash /tmp/setup_vault.sh ${count.index}",
+            "/tmp/setup_vault.sh ${count.index}",
         ]
     }
 
@@ -124,7 +124,7 @@ resource "digitalocean_droplet" "server" {
             "chmod +x /tmp/install_nomad.sh",
             "sed -i 's/server_ip/${self.ipv4_address_private}/g' $HOME/nomad/server.hcl",
             "sed -i 's/server_count/${var.server_droplet_count}/g' $HOME/nomad/server.hcl",
-            "bash /tmp/install_nomad.sh server",
+            "/tmp/install_nomad.sh server",
         ]
     }
 
@@ -202,7 +202,7 @@ resource "digitalocean_droplet" "client-01" {
         inline = [
             "sed -i 's/count/${count.index + 1}/g' /etc/systemd/system/consul-client.service",
             "chmod +x /tmp/install_consul.sh",
-            "bash /tmp/install_consul.sh client ${self.ipv4_address_private} ${digitalocean_droplet.server.0.ipv4_address_private}",
+            "/tmp/install_consul.sh client ${self.ipv4_address_private} ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
 
@@ -210,7 +210,7 @@ resource "digitalocean_droplet" "client-01" {
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/install_nomad.sh",
-            "bash /tmp/install_nomad.sh client",
+            "/tmp/install_nomad.sh client",
         ]
     }
 }
@@ -274,7 +274,7 @@ resource "digitalocean_droplet" "client-02" {
         inline = [
             "sed -i 's/count/3/g' /etc/systemd/system/consul-client.service",
             "chmod +x /tmp/install_consul.sh",
-            "bash /tmp/install_consul.sh client ${self.ipv4_address_private} ${digitalocean_droplet.server.0.ipv4_address_private}",
+            "/tmp/install_consul.sh client ${self.ipv4_address_private} ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
 
@@ -282,7 +282,7 @@ resource "digitalocean_droplet" "client-02" {
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/install_nomad.sh",
-            "bash /tmp/install_nomad.sh client",
+            "/tmp/install_nomad.sh client",
         ]
     }
 }

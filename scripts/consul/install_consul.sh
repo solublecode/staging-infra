@@ -2,8 +2,11 @@
 
 echo "Installing Consul on server\n"
 
-apt update
-apt install unzip
+apt install unzip net-tools
+
+export IP_ADDR=`ifconfig eth0 | grep 'inet ' | sed 's/\s\s*/ /g' | cut -d' ' -f3 | awk '{ print $1}'`
+export VAULT_ADDR=http://127.0.0.1:8200
+export NOMAD_ADDR=http://$IP_ADDR:4646
 
 mkdir /etc/consul.d
 mkdir -p $HOME/consul/data
