@@ -1,0 +1,9 @@
+#cloud-config
+package_update: true
+runcmd:
+    - [dnf, -y, install, dnf-plugins-core]
+    - [dnf, config-manager, --add-repo, "https://download.docker.com/linux/fedora/docker-ce.repo"]
+    - [dnf, -y, install, docker-ce, java-11-openjdk.x86_64]
+    - [groupadd, docker]
+    - [usermod, -aG, docker, $USER]
+    - [systemctl, enable, --now, docker]

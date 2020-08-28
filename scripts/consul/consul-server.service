@@ -1,0 +1,10 @@
+[Unit]
+Description=Consul server
+Wants=network-online.target
+After=network-online.target
+[Service]
+ExecStart= /bin/sh -c "consul agent -server -bootstrap-expect=1 -data-dir=$HOME/consul/data -node=agent-s-count -bind=$IP_ADDR -enable-script-checks=true -config-file=$HOME/consul/consul-connect-enable.hcl -config-dir=/etc/consul.d"
+Restart=always
+RestartSec=10
+[Install]
+WantedBy=multi-user.target

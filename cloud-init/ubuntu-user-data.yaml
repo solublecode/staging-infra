@@ -1,0 +1,13 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+packages:
+    - unzip
+    - net-tools
+    - docker.io
+    - openjdk-14-jre-headless
+bootcmd:
+    - export IP_ADDR=`ifconfig eth0 | grep 'inet ' | sed 's/\s\s*/ /g' | cut -d' ' -f3 | awk '{ print $1}'`
+    - export VAULT_ADDR=http://127.0.0.1:8200
+    - export NOMAD_ADDR=http://$IP_ADDR:4646
+
