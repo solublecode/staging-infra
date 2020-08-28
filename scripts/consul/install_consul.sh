@@ -2,6 +2,9 @@
 
 echo "Installing Consul on server\n"
 
+apt update
+apt install unzip
+
 mkdir /etc/consul.d
 mkdir -p $HOME/consul/data
 
