@@ -9,8 +9,7 @@ unzip vault_1.5.2_linux_amd64.zip -d /usr/local/bin
 rm -rf vault_1.5.2_linux_amd64.zip
 
 # Start vault as a service
-systemctl enable vault-server.service
-systemctl start vault-server.service
+vault server -config=/root/vault-config.hcl &
 
 echo "Installation of Vault complete\n"
 exit 0

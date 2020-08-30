@@ -67,11 +67,6 @@ resource "digitalocean_droplet" "server" {
     }
 
     provisioner "file" {
-        source      = "${path.root}/scripts/vault/vault-server.service"
-        destination = "/etc/systemd/system/vault-server.service"
-    }
-
-    provisioner "file" {
         source      = "${path.root}/scripts/vault/install_vault.sh"
         destination = "/tmp/install_vault.sh"
     }
