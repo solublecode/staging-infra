@@ -47,11 +47,6 @@ resource "digitalocean_droplet" "server" {
     }
 
     provisioner "file" {
-        source      = "${path.root}/scripts/nomad/client/client.hcl"
-        destination = "/root/nomad-client.hcl"
-    }
-
-    provisioner "file" {
         source      = "${path.root}/scripts/nomad/install_nomad.sh"
         destination = "/tmp/install_nomad.sh"
     }
@@ -106,7 +101,7 @@ resource "digitalocean_droplet" "server" {
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/install_vault.sh",
-            "/tmp/install_vault.sh server",
+            "/tmp/install_vault.sh",
         ]
     }
 
