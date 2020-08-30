@@ -111,8 +111,6 @@ resource "digitalocean_droplet" "server" {
         inline = [
             "chmod +x /root/prepare.sh",
             "chmod +x /tmp/install_nomad.sh",
-            "sed -i 's/server_ip/${self.ipv4_address_private}/g' /root/nomad-server.hcl",
-            "sed -i 's/server_count/${var.server_droplet_count}/g' /root/nomad-server.hcl",
             "/tmp/install_nomad.sh server",
         ]
     }
