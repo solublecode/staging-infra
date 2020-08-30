@@ -40,80 +40,12 @@ resource "digitalocean_droplet" "server" {
         destination = "/root/consul-connect-enable.hcl"
     }
 
-    # Nomad files
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/server/server.hcl"
-        destination = "/root/nomad-server.hcl"
-    }
-
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/install_nomad.sh"
-        destination = "/tmp/install_nomad.sh"
-    }
-
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/server/nomad-server.service"
-        destination = "/etc/systemd/system/nomad-server.service"
-    }
-
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/jobs/prepare.sh"
-        destination = "/root/prepare.sh"
-    }
-
-    provisioner "file" {
-        source      = "${path.root}/scripts/vault/vault-config.hcl"
-        destination = "/root/vault-config.hcl"
-    }
-
-    provisioner "file" {
-        source      = "${path.root}/scripts/vault/install_vault.sh"
-        destination = "/tmp/install_vault.sh"
-    }
-
-    provisioner "file" {
-        source      = "${path.root}/scripts/vault/setup_vault.sh"
-        destination = "/tmp/setup_vault.sh"
-    }
-
     # Install Consul
     provisioner "remote-exec" {
         inline = [
             "sed -i 's/count/${count.index + 1}/g' /etc/systemd/system/consul-server.service",
             "chmod +x /tmp/install_consul.sh",
             "/tmp/install_consul.sh server ${self.ipv4_address_private}",
-        ]
-    }
-
-    # Install Vault
-    provisioner "remote-exec" {
-        inline = [
-            "chmod +x /tmp/install_vault.sh",
-            "/tmp/install_vault.sh",
-        ]
-    }
-
-    # Setup Vault
-    provisioner "remote-exec" {
-        inline = [
-            "chmod +x /tmp/setup_vault.sh",
-            "/tmp/setup_vault.sh ${count.index}",
-        ]
-    }
-
-    # Install Nomad
-    provisioner "remote-exec" {
-        inline = [
-            "chmod +x /root/prepare.sh",
-            "chmod +x /tmp/install_nomad.sh",
-            "/tmp/install_nomad.sh server",
-        ]
-    }
-
-    # Join Nomad servers
-    provisioner "remote-exec" {
-        inline = [
-            "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
 }
@@ -163,37 +95,12 @@ resource "digitalocean_droplet" "client-01" {
         destination = "/etc/systemd/system/consul-client.service"
     }
 
-
-    # Nomad files
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/client/client.hcl"
-        destination = "/root/nomad-client.hcl"
-    }
-
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/install_nomad.sh"
-        destination = "/tmp/install_nomad.sh"
-    }
-
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/client/nomad-client.service"
-        destination = "/etc/systemd/system/nomad-client.service"
-    }
-
     # Install Consul
     provisioner "remote-exec" {
         inline = [
             "sed -i 's/count/${count.index + 1}/g' /etc/systemd/system/consul-client.service",
             "chmod +x /tmp/install_consul.sh",
             "/tmp/install_consul.sh client ${self.ipv4_address_private} ${digitalocean_droplet.server.0.ipv4_address_private}",
-        ]
-    }
-
-    # Install Nomad
-    provisioner "remote-exec" {
-        inline = [
-            "chmod +x /tmp/install_nomad.sh",
-            "/tmp/install_nomad.sh client",
         ]
     }
 }
@@ -236,37 +143,12 @@ resource "digitalocean_droplet" "client-02" {
         destination = "/etc/systemd/system/consul-client.service"
     }
 
-
-    # Nomad files
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/client/client.hcl"
-        destination = "/root/nomad-client.hcl"
-    }
-
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/install_nomad.sh"
-        destination = "/tmp/install_nomad.sh"
-    }
-
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/client/nomad-client.service"
-        destination = "/etc/systemd/system/nomad-client.service"
-    }
-
     # Install Consul
     provisioner "remote-exec" {
         inline = [
             "sed -i 's/count/3/g' /etc/systemd/system/consul-client.service",
             "chmod +x /tmp/install_consul.sh",
             "/tmp/install_consul.sh client ${self.ipv4_address_private} ${digitalocean_droplet.server.0.ipv4_address_private}",
-        ]
-    }
-
-    # Install Nomad
-    provisioner "remote-exec" {
-        inline = [
-            "chmod +x /tmp/install_nomad.sh",
-            "/tmp/install_nomad.sh client",
         ]
     }
 }
