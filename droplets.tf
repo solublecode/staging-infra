@@ -90,13 +90,6 @@ resource "digitalocean_droplet" "server" {
         ]
     }
 
-    # Join Consul Servers
-    provisioner "remote-exec" {
-        inline = [
-            "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
-        ]
-    }
-
     # Install Vault
     provisioner "remote-exec" {
         inline = [
