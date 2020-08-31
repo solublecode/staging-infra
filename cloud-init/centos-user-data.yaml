@@ -1,0 +1,82 @@
+#cloud-config
+users:
+    - name: groot
+      gecos: G Root
+      sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+      groups: users,docker,wheel,adm,systemd-journal
+      shell: /bin/bash
+      ssh_pwauth: True
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC99ASMMWsWlM+rU3c6UoU6BvlJr67X86WzFmFF//IeBWH1lv1Dccm3I7jYR7Pklr1M21cHdeoMakhPhH1xd/1Njj8DeFa/tJkpLiFc84qyIfensvXOhKJImpsRr0vvPruAUfm+RRtShLfDLqf42s6hSR5FWTTST4js/9CSEbrmEaCwDOfUVIlQuWmzaWL/tYF1HS6Z/FppAeswnXkDVsPUkXIMyKj5Bpgk5fbNgYoqK1t3iJehMM9dWAfGoD9ig1DiegnOUkN51DjCFEPQtdGcfaliv7M82soO1DVqTK7DZYyXU3Wmb82sy2GpDRWT0q9lJiaw8HHH805M2LzJ4Fty+Tc3b4l6QQCC8qhvgrzGBjbfbpYy3/yvgzfIMfeouDn9fXRmLCWfchRZIu9vcWCAsW6zzGyae2zlrzH/TLCd2BsWLmh3Rysu3hPzJTY8mvmal0Q2ZIxbtKOA5O5ZkYtHEfOo+s/5kD6Np9wOdKZDHOIhJRBk2TO7UgnRfA/jlA6pqYHA7/Q2348L/5KGQzn4o3DvKC03tFGUo4pc9mdSAOpPOi+e5vCi5tUPnSI34guw9K7DJ0waYDB7rTe+QxXi3lm6Lvu0qYB9QqACzEWyTzO18gjOhUU2lKBpV84oPeXD237mo7zvb7K4BBReHnLBrnDSoLlmlJxXUx5a3vOFfQ== collin@solublecode.dev
+chpasswd:
+  list: |
+     groot:groot
+  expire: True
+package_upgrade: true
+packages:
+    - wget
+    - nginx
+    - httpd-tools
+runcmd:
+    - yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    - yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    - yum install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm docker-ce docker-ce-cli
+    - systemctl enable --now docker
+    - mkdir -p /opt/nginx-ui
+    - htpasswd -b -c /opt/nginx-ui/.htpasswd groot grootPassw0rd
+    - docker run -d --restart=always --name nginxui -v /etc/nginx:/etc/nginx -p 8080:8080 schenkd/nginx-ui:latest
+    - systemctl enable --now cockpit.socket
+    - setsebool -P httpd_can_network_connect on
+    - systemctl enable --now nginx
+    - wget https://dl.eff.org/certbot-auto
+    - mv certbot-auto /usr/local/bin/certbot-auto
+    - chown root /usr/local/bin/certbot-auto
+    - chmod 0755 /usr/local/bin/certbot-auto
+    - sleep 30
+    - certbot-auto --nginx -n --email collin@solublecode.dev --agree-tos --domains cockpit.solublecode.dev,proxy.solublecode.dev
+    - echo "0 0,12 * * * root python3 -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q" | sudo tee -a /etc/crontab > /dev/null
+write_files:
+    - path: /etc/cockpit/cockpit.conf
+      content: |
+        [WebService]
+        Origins = https://cockpit.solublecode.dev wss://cockpit.solublecode.dev
+        ProtocolHeader = X-Forwarded-Proto
+    - path: /etc/nginx/conf.d/proxy.solublecode.dev.conf
+      content: |
+        server {
+            listen         80;
+            listen         443 ssl;
+            server_name    proxy.solublecode.dev;
+
+            location / {
+                proxy_pass http://127.0.0.1:8080/;
+            }
+
+            auth_basic "auth required";
+            auth_basic_user_file /opt/nginx-ui/.htpasswd;
+
+        }
+    - path: /etc/nginx/conf.d/cockpit.solublecode.dev.conf
+      content: |
+        server {
+            listen         80;
+            listen         443 ssl;
+            server_name    cockpit.solublecode.dev;
+        
+            location / {
+                # Required to proxy the connection to Cockpit
+                proxy_pass https://127.0.0.1:9090;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-Proto $scheme;
+        
+                # Required for web sockets to function
+                proxy_http_version 1.1;
+                proxy_buffering off;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+        
+                # Pass ETag header from Cockpit to clients.
+                # See: https://github.com/cockpit-project/cockpit/issues/5239
+                gzip off;
+            }
+        }

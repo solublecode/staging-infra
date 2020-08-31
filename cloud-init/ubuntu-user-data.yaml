@@ -7,6 +7,8 @@ packages:
     - docker.io
     - openjdk-14-jre-headless
 runcmd:
-    - [mkdir, -p, /root/consul]
-    - [mkdir, -p, /root/nomad]
-    - [mkdir, -p, /root/vault]
+    - [mkdir, -p, /etc/consul.d, /opt/consul]
+    - [mkdir, -p, /etc/nomad.d, /opt/nomad]
+    - [mkdir, -p, /etc/vault.d, /opt/vault]
+bootcmd:
+    - ifdown eth0

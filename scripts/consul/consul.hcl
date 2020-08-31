@@ -1,0 +1,9 @@
+datacenter       = "__DATACENTER__"
+bind_addr        = "__SERVER_IP_PRV__"
+data_dir         = "/opt/consul"
+encrypt          = "kNIf5UjNTxDNAQt+fNC7u1ck2ZRZriVRU+QXhStOrk="
+server           = true
+bootstrap_expect = __CLUSTER_SIZE__
+ui               = true
+retry_join       = ["__SERVER_IP_PRV__"]
+client_addr      = "0.0.0.0"

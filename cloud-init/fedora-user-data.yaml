@@ -1,5 +1,6 @@
 #cloud-config
 package_update: true
+package_upgrade: true
 runcmd:
     - [dnf, -y, install, dnf-plugins-core]
     - [dnf, config-manager, --add-repo, "https://download.docker.com/linux/fedora/docker-ce.repo"]
@@ -7,6 +8,8 @@ runcmd:
     - [groupadd, docker]
     - [usermod, -aG, docker, $USER]
     - [systemctl, enable, --now, docker]
-    - [mkdir, -p, /root/consul]
-    - [mkdir, -p, /root/nomad]
-    - [mkdir, -p, /root/vault]
+    - [mkdir, -p, /etc/consul.d, /opt/consul]
+    - [mkdir, -p, /etc/nomad.d, /opt/nomad]
+    - [mkdir, -p, /etc/vault.d, /opt/vault]
+bootcmd:
+    - ifdown eth0
