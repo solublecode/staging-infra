@@ -1,5 +1,5 @@
 log_level  = "DEBUG"
-data_dir   = "/opt/nomad"
+data_dir   = "/root/nomad"
 bind_addr  = "__SERVER_IP_PRV__"
 datacenter = "solublecode-dc01"
 

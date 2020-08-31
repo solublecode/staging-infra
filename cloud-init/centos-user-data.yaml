@@ -18,12 +18,10 @@ packages:
     - nginx
     - httpd-tools
 runcmd:
-    - dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-    - dnf-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-    - dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm docker-ce docker-ce-cli
+    - yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    - yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    - yum install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm docker-ce docker-ce-cli
     - systemctl enable --now docker
-    - mkdir -p /opt/nginx-ui
-    - htpasswd -b -c /opt/nginx-ui/.htpasswd groot grootPassw0rd
     - docker run -d --restart=always --name nginxui -v /etc/nginx:/etc/nginx -p 8080:8080 schenkd/nginx-ui:latest
     - systemctl enable --now cockpit.socket
     - setsebool -P httpd_can_network_connect on
@@ -34,6 +32,21 @@ runcmd:
     - chmod 0755 /usr/local/bin/certbot-auto
     - echo "0 0,12 * * * root python3 -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q" | sudo tee -a /etc/crontab > /dev/null
 write_files:
+    - path: /root/prepare.sh
+      content: |
+        #! /bin/bash
+        certbot-auto --nginx -n --email collin@solublecode.dev --agree-tos --domains cockpit.solublecode.dev,proxy.solublecode.dev
+        dnf install firewalld
+        systemctl enable --now firewalld
+        firewall-cmd --permanent --zone=public --add-service=cockpit
+        firewall-cmd --permanent --zone=public --add-service=https
+        firewall-cmd --permanent --zone=public --add-service=http
+        sed -i 's/AllowZoneDrifting=yes/AllowZoneDrifting=no/g' /etc/firewalld/firewalld.conf
+        systemctl restart firewalld
+        mkdir -p /opt/nginx-ui
+        pass=`date +%s | sha256sum | base64 | head -c 32 ; echo`
+        echo "nginx-ui groot password: " ${pass}
+        htpasswd -b -c /opt/nginx-ui/.htpasswd groot ${pass}
     - path: /etc/cockpit/cockpit.conf
       content: |
         [WebService]
@@ -80,4 +93,3 @@ write_files:
         }
 bootcmd:
   - sed -i 's/nameserver 67.207.67.2/nameserver 1.1.1.1/g' /etc/resolv.conf
-  - sed -i 's/nameserver 67.207.67.3/nameserver 8.8.8.8/g' /etc/resolv.conf

@@ -8,8 +8,8 @@ echo "Installing Nomad on server\n"
 wget https://releases.hashicorp.com/nomad/0.12.3/nomad_0.12.3_linux_amd64.zip
 unzip nomad_0.12.3_linux_amd64.zip -d /usr/local/bin
 
-sed -i 's/__SERVER_IP_PRV__/'$PRIVATE_IP'/g' /etc/nomad.d/nomad.hcl
-sed -i 's/__CLUSTER_SIZE__/3/g' /etc/nomad.d/nomad.hcl
+vaultToken=`grep "Initial Root Token" /root/startupOutput.txt | cut -d' ' -f4`
+sed -i 's/PLEASE_FILL_TOKEN/${vaultToken}/g' /root/nomad/nomad.hcl
 
 # Start nomad as a service
 systemctl enable nomad.service

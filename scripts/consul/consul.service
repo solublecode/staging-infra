@@ -3,10 +3,10 @@ Description="HashiCorp Consul - A service mesh solution"
 Documentation=https://www.consul.io/
 Requires=network-online.target
 After=network-online.target
-ConditionFileNotEmpty=/etc/consul.d/consul.hcl
+ConditionFileNotEmpty=/root/consul/consul.hcl
 
 [Service]
-ExecStart=/usr/local/bin/consul agent -config-dir=/etc/consul.d/
+ExecStart=/usr/local/bin/consul agent -config-dir=/root/consul/
 ExecReload=/usr/local/bin/consul reload
 ExecStop=/usr/local/bin/consul leave
 KillMode=process

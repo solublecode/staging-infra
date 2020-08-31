@@ -8,12 +8,6 @@ runcmd:
     - groupadd docker
     - usermod -aG docker $USER
     - systemctl enable --now docker
-    - mkdir -p /etc/consul.d /opt/consul
-    - mkdir -p /etc/nomad.d /opt/nomad
-    - mkdir -p /etc/vault.d /opt/vault
-write_files:
-    - path: /etc/environment
-        content: |
-            PRIVATE_IP=`ifconfig eth1 | grep 'inet ' | sed 's/\s\s*/ /g' | cut -d' ' -f3 | awk '{ print $1}'`
+    - mkdir -p /root/{nomad,consul,vault}
 bootcmd:
     - ifdown eth0
