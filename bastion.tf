@@ -22,41 +22,6 @@ resource "digitalocean_record" "bastion" {
     ttl    = 1800
 }
 
-resource "digitalocean_firewall" "bastion" {
-    name = "${var.name}-only-ssh-bastion"
-    droplet_ids = [digitalocean_droplet.bastion.id]
-
-    inbound_rule {
-        protocol = "tcp"
-        port_range = "22"
-        source_addresses = ["0.0.0.0/0", "::/0"]
-    }
-
-    outbound_rule {
-        protocol = "tcp"
-        port_range = "22"
-        destination_addresses = [digitalocean_vpc.mapesa.ip_range]
-    }
-
-    outbound_rule {
-        protocol = "icmp"
-        destination_addresses = [digitalocean_vpc.mapesa.ip_range]
-    }
-
-    outbound_rule {
-        protocol              = "udp"
-        port_range            = "1-65535"
-        destination_addresses = [digitalocean_vpc.mapesa.ip_range]
-    }
-
-    outbound_rule {
-        protocol              = "tcp"
-        port_range            = "1-65535"
-        destination_addresses = [digitalocean_vpc.mapesa.ip_range]
-    }
-
-}
-
 resource "digitalocean_record" "cockpit" {
     domain = data.digitalocean_domain.mapesa.name
     type   = "A"
