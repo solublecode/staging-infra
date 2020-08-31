@@ -1,5 +1,7 @@
 #! /bin/bash
 
+sleep 200 # wait for cloud-init
+
 echo "Installing Nomad on server\n"
 
 # Install nomad
