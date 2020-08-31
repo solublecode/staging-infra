@@ -29,7 +29,7 @@ resource "digitalocean_droplet" "server" {
             "mkdir -p /root/consul/data",
             "mkdir -p /root/nomad/data",
             "mkdir -p /root/vault/data",
-            "sleep 200",
+            "sleep 400",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -102,6 +102,7 @@ resource "digitalocean_droplet" "server" {
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/install_nomad.sh",
+            "sed -i 's/__NOMAD_SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
             "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
             "sed -i 's/__CLUSTER_SIZE__/${var.server_droplet_count}/g' /root/nomad/nomad.hcl",
             "/tmp/install_nomad.sh",
@@ -147,7 +148,7 @@ resource "digitalocean_droplet" "client-01" {
             "mkdir -p /root/consul/data",
             "mkdir -p /root/nomad/data",
             "mkdir -p /root/vault/data",
-            "sleep 200",
+            "sleep 400",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -195,6 +196,9 @@ resource "digitalocean_droplet" "client-01" {
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/install_nomad.sh",
+            "sed -i 's/__NOMAD_SERVER_IP_PRV__/${digitalocean_droplet.server.0.ipv4_address_private}/g' /root/nomad/nomad.hcl",
+            "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
+            "sed -i 's/__CLUSTER_SIZE__/${var.client_droplet_count}/g' /root/nomad/nomad.hcl",
             "/tmp/install_nomad.sh",
         ]
     }
@@ -236,7 +240,7 @@ resource "digitalocean_droplet" "client-02" {
             "mkdir -p /root/consul/data",
             "mkdir -p /root/nomad/data",
             "mkdir -p /root/vault/data",
-            "sleep 200",
+            "sleep 400",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -284,6 +288,9 @@ resource "digitalocean_droplet" "client-02" {
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/install_nomad.sh",
+            "sed -i 's/__NOMAD_SERVER_IP_PRV__/${digitalocean_droplet.server.0.ipv4_address_private}/g' /root/nomad/nomad.hcl",
+            "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
+            "sed -i 's/__CLUSTER_SIZE__/${var.client_droplet_count}/g' /root/nomad/nomad.hcl",
             "/tmp/install_nomad.sh",
         ]
     }

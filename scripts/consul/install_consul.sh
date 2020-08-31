@@ -5,7 +5,7 @@ echo "Installing Consul on server"
 # Start install of consul and setup
 wget https://releases.hashicorp.com/consul/1.8.3/consul_1.8.3_linux_amd64.zip
 unzip consul_1.8.3_linux_amd64.zip -d /usr/local/bin
-rm -rf consul_1.8.3_linux_amd64.zip
+rm consul_1.8.3_linux_amd64.zip
 
 # Setup autocomplete
 consul -autocomplete-install

@@ -6,6 +6,7 @@ After=network-online.target
 StartLimitBurst=3
 
 [Service]
+Environment="VAULT_TOKEN=replace_vault_token"
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStart=/usr/local/bin/nomad agent -config /root/nomad/
 ExecStartPost=/bin/sleep 5
