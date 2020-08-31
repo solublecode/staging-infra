@@ -48,11 +48,6 @@ resource "digitalocean_droplet" "server" {
             "/tmp/install_consul.sh",
         ]
     }
-    provisioner "remote-exec" {
-        inline = [
-            "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
-        ]
-    }
 
     # ~~~~~~~~~~~~~ #
     # Install Vault #
@@ -159,11 +154,6 @@ resource "digitalocean_droplet" "client-01" {
             "/tmp/install_consul.sh",
         ]
     }
-    provisioner "remote-exec" {
-        inline = [
-            "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
-        ]
-    }
 
     # ~~~~~~~~~~~~~ #
     # Install Nomad #
@@ -240,11 +230,6 @@ resource "digitalocean_droplet" "client-02" {
             "sleep 200",
             "chmod +x /tmp/install_consul.sh",
             "/tmp/install_consul.sh",
-        ]
-    }
-    provisioner "remote-exec" {
-        inline = [
-            "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
 
