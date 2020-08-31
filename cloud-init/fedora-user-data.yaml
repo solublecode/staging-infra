@@ -16,3 +16,7 @@ runcmd:
     - [mkdir, -p, /opt/vault]
 bootcmd:
     - ifdown eth0
+write_files:
+    - path: /etc/profile
+        content: |
+            export PRIVATE_IP=`ifconfig eth1 | grep 'inet ' | sed 's/\s\s*/ /g' | cut -d' ' -f3 | awk '{ print $1}'`

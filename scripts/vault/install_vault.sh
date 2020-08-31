@@ -13,6 +13,8 @@ unzip vault_1.5.2_linux_amd64.zip -d /usr/local/bin
 vault -autocomplete-install
 complete -C /usr/local/bin/vault vault
 
+sed -i 's/__SERVER_IP_PRV__/'$PRIVATE_IP'/g' /etc/vault.d/vault.hcl
+
 # Start vault as a service
 systemctl enable vault.service
 systemctl start vault.service

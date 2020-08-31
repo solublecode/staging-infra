@@ -14,6 +14,9 @@ consul -autocomplete-install
 complete -C /usr/local/bin/consul consul
 
 
+sed -i 's/__SERVER_IP_PRV__/'$PRIVATE_IP'/g' /etc/consul.d/consul.hcl
+sed -i 's/__CLUSTER_SIZE__/3/g' /etc/consul.d/consul.hcl
+
 # Start consul as a service
 systemctl enable consul.service
 systemctl start consul.service

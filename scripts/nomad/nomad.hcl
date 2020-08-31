@@ -1,7 +1,7 @@
 log_level  = "DEBUG"
 data_dir   = "/opt/nomad"
 bind_addr  = "__SERVER_IP_PRV__"
-datacenter = "__DATACENTER__"
+datacenter = "solublecode-dc01"
 
 # Enable the server
 server {

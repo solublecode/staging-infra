@@ -1,4 +1,4 @@
-datacenter       = "__DATACENTER__"
+datacenter       = "solublecode-dc01"
 bind_addr        = "__SERVER_IP_PRV__"
 data_dir         = "/opt/consul"
 encrypt          = "kNIf5UjNTxDNAQt+fNC7u1ck2ZRZriVRU+QXhStOrk="
