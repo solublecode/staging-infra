@@ -8,6 +8,8 @@ runcmd:
     - groupadd docker
     - usermod -aG docker $USER
     - systemctl enable --now docker
-    - mkdir -p /root/{nomad,consul,vault}
+    - mkdir -p /root/nomad
+    - mkdir -p /root/consul
+    - mkdir -p /root/vault
 bootcmd:
     - ifdown eth0
