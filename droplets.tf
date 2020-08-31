@@ -29,6 +29,7 @@ resource "digitalocean_droplet" "server" {
             "mkdir -p /root/consul/data",
             "mkdir -p /root/nomad/data",
             "mkdir -p /root/vault/data",
+            "sleep 200",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -56,7 +57,6 @@ resource "digitalocean_droplet" "server" {
     }
     provisioner "remote-exec" {
         inline = [
-            "sleep 10",
             "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
@@ -109,7 +109,6 @@ resource "digitalocean_droplet" "server" {
     }
     provisioner "remote-exec" {
         inline = [
-            "sleep 10",
             "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
             "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
@@ -148,6 +147,7 @@ resource "digitalocean_droplet" "client-01" {
             "mkdir -p /root/consul/data",
             "mkdir -p /root/nomad/data",
             "mkdir -p /root/vault/data",
+            "sleep 200",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -173,7 +173,6 @@ resource "digitalocean_droplet" "client-01" {
     }
     provisioner "remote-exec" {
         inline = [
-            "sleep 10",
             "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
@@ -201,7 +200,6 @@ resource "digitalocean_droplet" "client-01" {
     }
     provisioner "remote-exec" {
         inline = [
-            "sleep 10",
             "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
             "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
@@ -238,6 +236,7 @@ resource "digitalocean_droplet" "client-02" {
             "mkdir -p /root/consul/data",
             "mkdir -p /root/nomad/data",
             "mkdir -p /root/vault/data",
+            "sleep 200",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -263,7 +262,6 @@ resource "digitalocean_droplet" "client-02" {
     }
     provisioner "remote-exec" {
         inline = [
-            "sleep 10",
             "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
@@ -291,7 +289,6 @@ resource "digitalocean_droplet" "client-02" {
     }
     provisioner "remote-exec" {
         inline = [
-            "sleep 10",
             "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
             "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
