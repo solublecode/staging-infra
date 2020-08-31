@@ -8,8 +8,11 @@ runcmd:
     - [groupadd, docker]
     - [usermod, -aG, docker, $USER]
     - [systemctl, enable, --now, docker]
-    - [mkdir, -p, /etc/consul.d, /opt/consul]
-    - [mkdir, -p, /etc/nomad.d, /opt/nomad]
-    - [mkdir, -p, /etc/vault.d, /opt/vault]
+    - [mkdir, -p, /etc/consul.d]
+    - [mkdir, -p, /opt/consul]
+    - [mkdir, -p, /etc/nomad.d]
+    - [mkdir, -p, /opt/nomad]
+    - [mkdir, -p, /etc/vault.d]
+    - [mkdir, -p, /opt/vault]
 bootcmd:
     - ifdown eth0
