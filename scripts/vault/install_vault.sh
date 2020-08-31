@@ -1,7 +1,5 @@
 #! /bin/bash
 
-sleep 200 # wait for cloud-init
-
 echo "Installing Vault on server"
 
 export VAULT_ADDR=http://127.0.0.1:8200

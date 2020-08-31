@@ -1,7 +1,5 @@
 #! /bin/bash
 
-sleep 200 # wait for cloud-init
-
 echo "Installing Consul on server"
 
 # Start install of consul and setup

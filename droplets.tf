@@ -41,6 +41,7 @@ resource "digitalocean_droplet" "server" {
     }
     provisioner "remote-exec" {
         inline = [
+            "sleep 200",
             "chmod +x /tmp/install_consul.sh",
             "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/consul/consul.hcl",
             "sed -i 's/__CLUSTER_SIZE__/${var.server_droplet_count}/g' /root/consul/consul.hcl",
@@ -70,6 +71,7 @@ resource "digitalocean_droplet" "server" {
     }
     provisioner "remote-exec" {
         inline = [
+            "sleep 200",
             "chmod +x /tmp/install_vault.sh",
             "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /etc/vault.d/vault.hcl",
             "/tmp/install_vault.sh",
@@ -93,6 +95,7 @@ resource "digitalocean_droplet" "server" {
     }
     provisioner "remote-exec" {
         inline = [
+            "sleep 200",
             "chmod +x /tmp/install_nomad.sh",
             "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
             "sed -i 's/__CLUSTER_SIZE__/${var.server_droplet_count}/g' /root/nomad/nomad.hcl",
@@ -151,6 +154,7 @@ resource "digitalocean_droplet" "client-01" {
     }
     provisioner "remote-exec" {
         inline = [
+            "sleep 200",
             "chmod +x /tmp/install_consul.sh",
             "/tmp/install_consul.sh",
         ]
@@ -178,6 +182,7 @@ resource "digitalocean_droplet" "client-01" {
     }
     provisioner "remote-exec" {
         inline = [
+            "sleep 200",
             "chmod +x /tmp/install_nomad.sh",
             "/tmp/install_nomad.sh",
         ]
@@ -232,6 +237,7 @@ resource "digitalocean_droplet" "client-02" {
     }
     provisioner "remote-exec" {
         inline = [
+            "sleep 200",
             "chmod +x /tmp/install_consul.sh",
             "/tmp/install_consul.sh",
         ]
@@ -259,6 +265,7 @@ resource "digitalocean_droplet" "client-02" {
     }
     provisioner "remote-exec" {
         inline = [
+            "sleep 200",
             "chmod +x /tmp/install_nomad.sh",
             "/tmp/install_nomad.sh",
         ]
