@@ -12,7 +12,7 @@ chpasswd:
   list: |
      groot:groot
   expire: True
-package_upgrade: true
+package_update: true
 packages:
     - wget
     - nginx
