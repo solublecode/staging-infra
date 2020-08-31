@@ -33,6 +33,8 @@ runcmd:
     - echo "0 0,12 * * * root python3 -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q" | sudo tee -a /etc/crontab > /dev/null
 write_files:
     - path: /root/prepare.sh
+      owner: root:root
+      permissions: '0700'
       content: |
         #! /bin/bash
         certbot-auto --nginx -n --email collin@solublecode.dev --agree-tos --domains cockpit.solublecode.dev,nginx.solublecode.dev
