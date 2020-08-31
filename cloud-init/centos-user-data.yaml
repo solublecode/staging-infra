@@ -18,9 +18,9 @@ packages:
     - nginx
     - httpd-tools
 runcmd:
-    - yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-    - yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-    - yum install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm docker-ce docker-ce-cli
+    - dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    - dnf-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    - dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm docker-ce docker-ce-cli
     - systemctl enable --now docker
     - mkdir -p /opt/nginx-ui
     - htpasswd -b -c /opt/nginx-ui/.htpasswd groot grootPassw0rd
