@@ -29,7 +29,7 @@ resource "digitalocean_droplet" "server" {
             "mkdir -p /root/consul/data",
             "mkdir -p /root/nomad/data",
             "mkdir -p /root/vault/data",
-            "sleep 400",
+            "sleep 360",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -148,7 +148,7 @@ resource "digitalocean_droplet" "client-01" {
             "mkdir -p /root/consul/data",
             "mkdir -p /root/nomad/data",
             "mkdir -p /root/vault/data",
-            "sleep 400",
+            "sleep 360",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -240,7 +240,7 @@ resource "digitalocean_droplet" "client-02" {
             "mkdir -p /root/consul/data",
             "mkdir -p /root/nomad/data",
             "mkdir -p /root/vault/data",
-            "sleep 400",
+            "sleep 360",
         ]
     }
     # ~~~~~~~~~~~~~~ #
