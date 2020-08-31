@@ -6,10 +6,6 @@ packages:
     - net-tools
     - docker.io
     - openjdk-14-jre-headless
-runcmd:
-    - mkdir -p /root/nomad
-    - mkdir -p /root/consul
-    - mkdir -p /root/vault
 bootcmd:
     - ifdown eth0
     

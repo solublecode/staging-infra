@@ -37,8 +37,8 @@ write_files:
       permissions: '0700'
       content: |
         #! /bin/bash
-        certbot-auto --nginx -n --email collin@solublecode.dev --agree-tos --domains cockpit.solublecode.dev,nginx.solublecode.dev
-        dnf install firewalld
+        certbot-auto --nginx -n --email collin@solublecode.dev --agree-tos -d cockpit.solublecode.dev -d nginx.solublecode.dev
+        dnf -y install firewalld
         systemctl enable --now firewalld
         firewall-cmd --permanent --zone=public --add-service=cockpit
         firewall-cmd --permanent --zone=public --add-service=https

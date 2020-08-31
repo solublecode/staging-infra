@@ -7,7 +7,7 @@ StartLimitBurst=3
 
 [Service]
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart=/usr/local/bin/nomad agent -config /root/nomad.hcl
+ExecStart=/usr/local/bin/nomad agent -config /root/nomad/
 ExecStartPost=/bin/sleep 5
 KillMode=process
 KillSignal=SIGINT
