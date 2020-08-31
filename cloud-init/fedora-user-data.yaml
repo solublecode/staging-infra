@@ -2,21 +2,18 @@
 package_update: true
 package_upgrade: true
 runcmd:
-    - [dnf, -y, install, dnf-plugins-core]
-    - [dnf, config-manager, --add-repo, "https://download.docker.com/linux/fedora/docker-ce.repo"]
-    - [dnf, -y, install, docker-ce, java-11-openjdk.x86_64]
-    - [groupadd, docker]
-    - [usermod, -aG, docker, $USER]
-    - [systemctl, enable, --now, docker]
-    - [mkdir, -p, /etc/consul.d]
-    - [mkdir, -p, /opt/consul]
-    - [mkdir, -p, /etc/nomad.d]
-    - [mkdir, -p, /opt/nomad]
-    - [mkdir, -p, /etc/vault.d]
-    - [mkdir, -p, /opt/vault]
+    - dnf -y install dnf-plugins-core
+    - dnf config-manager --add-repo "https://download.docker.com/linux/fedora/docker-ce.repo"
+    - dnf -y install docker-ce java-11-openjdk.x86_64
+    - groupadd docker
+    - usermod -aG docker $USER
+    - systemctl enable --now docker
+    - mkdir -p /etc/consul.d /opt/consul
+    - mkdir -p /etc/nomad.d /opt/nomad
+    - mkdir -p /etc/vault.d /opt/vault
+write_files:
+    - path: /etc/environment
+        content: |
+            PRIVATE_IP=`ifconfig eth1 | grep 'inet ' | sed 's/\s\s*/ /g' | cut -d' ' -f3 | awk '{ print $1}'`
 bootcmd:
     - ifdown eth0
-write_files:
-    - path: /etc/profile
-        content: |
-            export PRIVATE_IP=`ifconfig eth1 | grep 'inet ' | sed 's/\s\s*/ /g' | cut -d' ' -f3 | awk '{ print $1}'`

@@ -42,6 +42,19 @@ resource "digitalocean_firewall" "bastion" {
         protocol = "icmp"
         destination_addresses = [digitalocean_vpc.mapesa.ip_range]
     }
+
+    outbound_rule {
+        protocol              = "udp"
+        port_range            = "1-65535"
+        destination_addresses = [digitalocean_vpc.mapesa.ip_range]
+    }
+
+    outbound_rule {
+        protocol              = "tcp"
+        port_range            = "1-65535"
+        destination_addresses = [digitalocean_vpc.mapesa.ip_range]
+    }
+
 }
 
 resource "digitalocean_record" "cockpit" {

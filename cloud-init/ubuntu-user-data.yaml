@@ -7,16 +7,13 @@ packages:
     - docker.io
     - openjdk-14-jre-headless
 runcmd:
-    - [mkdir, -p, /etc/consul.d]
-    - [mkdir, -p, /opt/consul]
-    - [mkdir, -p, /etc/nomad.d]
-    - [mkdir, -p, /opt/nomad]
-    - [mkdir, -p, /etc/vault.d]
-    - [mkdir, -p, /opt/vault]
+    - mkdir -p /etc/consul.d /opt/consul
+    - mkdir -p /etc/nomad.d /opt/nomad
+    - mkdir -p /etc/vault.d /opt/vault
+write_files:
+    - path: /etc/environment
+        content: |
+            PRIVATE_IP=`ifconfig eth1 | grep 'inet ' | sed 's/\s\s*/ /g' | cut -d' ' -f3 | awk '{ print $1}'`
 bootcmd:
     - ifdown eth0
-write_files:
-    - path: /etc/profile
-        content: |
-            export PRIVATE_IP=`ifconfig eth1 | grep 'inet ' | sed 's/\s\s*/ /g' | cut -d' ' -f3 | awk '{ print $1}'`
     

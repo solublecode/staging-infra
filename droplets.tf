@@ -311,7 +311,7 @@ resource "digitalocean_loadbalancer" "mapesa" {
 
 resource "digitalocean_firewall" "mapesa" {
 
-    name        = "${var.name}-only-vpc-traffic"
+    name        = "${var.name}-vpc-traffic"
     droplet_ids = concat(digitalocean_droplet.server.*.id, digitalocean_droplet.client-01.*.id, [digitalocean_droplet.client-02.id])
 
     inbound_rule {
