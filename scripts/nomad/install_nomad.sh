@@ -7,7 +7,7 @@ wget https://releases.hashicorp.com/nomad/0.12.3/nomad_0.12.3_linux_amd64.zip
 unzip nomad_0.12.3_linux_amd64.zip -d /usr/local/bin
 
 vaultToken=`grep "Initial Root Token" /root/startupOutput.txt | cut -d' ' -f4`
-sed -i 's/PLEASE_FILL_TOKEN/${vaultToken}/g' /root/nomad/nomad.hcl
+sed -i 's/PLEASE_FILL_TOKEN/${vaultToken}/g' /root/nomad.hcl
 
 # Start nomad as a service
 systemctl enable nomad.service

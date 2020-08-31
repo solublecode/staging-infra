@@ -35,7 +35,7 @@ write_files:
     - path: /root/prepare.sh
       content: |
         #! /bin/bash
-        certbot-auto --nginx -n --email collin@solublecode.dev --agree-tos --domains cockpit.solublecode.dev,proxy.solublecode.dev
+        certbot-auto --nginx -n --email collin@solublecode.dev --agree-tos --domains cockpit.solublecode.dev,nginx.solublecode.dev
         dnf install firewalld
         systemctl enable --now firewalld
         firewall-cmd --permanent --zone=public --add-service=cockpit
@@ -52,12 +52,12 @@ write_files:
         [WebService]
         Origins = https://cockpit.solublecode.dev wss://cockpit.solublecode.dev
         ProtocolHeader = X-Forwarded-Proto
-    - path: /etc/nginx/conf.d/proxy.solublecode.dev.conf
+    - path: /etc/nginx/conf.d/nginx.solublecode.dev.conf
       content: |
         server {
             listen         80;
             listen         443 ssl;
-            server_name    proxy.solublecode.dev;
+            server_name    nginx.solublecode.dev;
 
             location / {
                 proxy_pass http://127.0.0.1:8080/;

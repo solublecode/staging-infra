@@ -33,7 +33,7 @@ resource "digitalocean_record" "cockpit" {
 resource "digitalocean_record" "nginx-ui" {
     domain = data.digitalocean_domain.mapesa.name
     type   = "A"
-    name   = "proxy"
+    name   = "nginx"
     value  = digitalocean_droplet.bastion.ipv4_address
     ttl    = 1800
 }
