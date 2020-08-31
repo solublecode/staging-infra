@@ -7,6 +7,11 @@ variable region {
     default = "ams3"
 }
 
+variable datacenter {
+    type = string
+    default = "dc1"
+}
+
 variable server_droplet_count {
     type = number
     default = 3
