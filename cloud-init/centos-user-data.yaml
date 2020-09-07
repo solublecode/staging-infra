@@ -5,6 +5,9 @@ users:
       sudo: ["ALL=(ALL) NOPASSWD:ALL"]
       groups: users,docker,wheel,adm,systemd-journal
       shell: /bin/bash
+      ssh_pwauth: True
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDg0aL7mFY1FjRlVvFOQVH0TsoLxrt75eu7sl/g9YvyYzYk3I9GSh/pogGwI7pXNfxgUgRe+GXONol8axsnFpdXzRHHEdA921ejm2nnsOFpp9ZH00P/IFEZbk0/6qj+WiEHFLHc7XM94Myq5rdaWoR+MVQSVAbJNcALGU0yYmp35MYBEdxCLmOmSrf9HsOmHRdmbJLrM8LDdrsHj3JJWVsw6+ZWh4YuuiVp3H288GEnKBWi6mpNs8Y+0HLLYfxuwAeJpfN4Nn6XF8gjfvQBZy0WGuFzeHBQkUkhLz1fHddK3bg5Pz2d98FyRxVwjrKBfidy6hUejepsZeCmgP5rWFbIDMTFPry5gAWfMS3VkOGUx+hPqtqpzjW9M9VHYNCZ12RSNl9+cuQs/QToEV5FcHu6homuW8WVbxjySaRvAI7zvB9NTSvx4yXeFfPFvpPLOjG+omr4uY5GwNDETbUTtCmODgwpg8JoRAHAXI8jhRN3LirqZMRk29sGkFhCdXuSgwIdCpLuTJiaX8LI8al41vpSP9Garcad87uZ+Y7fzswpfK7RXgnCfUWTrWI/PhdDBKqxxVA2F1kxp0mqTq8FDJtDRZQ+mQn1hU2vQ3zOt858j8JRlBOns7AQ0XLX49V5dWR4F6PHLdPnPGkkTeLiYBrSxyMc3/ltWDAstnSBPiwCcw== collin@solublecode.dev
 chpasswd:
   list: |
      groot:groot
