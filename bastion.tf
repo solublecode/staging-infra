@@ -13,6 +13,13 @@ resource "digitalocean_droplet" "bastion" {
         create_before_destroy = true
     }
 
+    connection {
+        type                 = "ssh"
+        user                 = "root"
+        host                 = self.ipv4_address_private
+        private_key          = var.ssh_private_key
+    }
+
     provisioner "remote-exec" {
         inline = [
             "sleep 360",
