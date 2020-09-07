@@ -452,5 +452,5 @@ resource "digitalocean_record" "mapesa" {
     type   = "A"
     name   = var.subdomain
     value  = digitalocean_loadbalancer.mapesa.ip
-    ttl    = 1800
+    ttl    = 30
 }

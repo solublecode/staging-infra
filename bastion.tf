@@ -26,7 +26,7 @@ resource "digitalocean_record" "bastion" {
     type   = "A"
     name   = "sh"
     value  = digitalocean_droplet.bastion.ipv4_address
-    ttl    = 1800
+    ttl    = 30
 }
 
 resource "digitalocean_record" "cockpit" {
@@ -34,7 +34,7 @@ resource "digitalocean_record" "cockpit" {
     type   = "A"
     name   = "cockpit-stg"
     value  = digitalocean_droplet.bastion.ipv4_address
-    ttl    = 1800
+    ttl    = 30
 }
 
 resource "digitalocean_record" "nginx-ui" {
@@ -42,5 +42,5 @@ resource "digitalocean_record" "nginx-ui" {
     type   = "A"
     name   = "nginx-stg"
     value  = digitalocean_droplet.bastion.ipv4_address
-    ttl    = 1800
+    ttl    = 30
 }
