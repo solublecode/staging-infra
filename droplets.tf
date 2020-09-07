@@ -69,6 +69,10 @@ resource "digitalocean_droplet" "server" {
         destination = "/tmp/install_vault.sh"
     }
     provisioner "file" {
+        source      = "${path.root}/scripts/vault/setup_vault.sh"
+        destination = "/tmp/setup_vault.sh"
+    }
+    provisioner "file" {
         source      = "${path.root}/scripts/vault/vault.hcl"
         destination = "/root/vault/vault.hcl"
     }
@@ -81,6 +85,14 @@ resource "digitalocean_droplet" "server" {
             "chmod +x /tmp/install_vault.sh",
             "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /etc/vault.d/vault.hcl",
             "/tmp/install_vault.sh",
+        ]
+    }
+
+    # Setup Vault
+    provisioner "remote-exec" {
+        inline = [
+            "chmod +x /tmp/setup_vault.sh",
+            "/tmp/setup_vault.sh ${count.index}",
         ]
     }
 
@@ -300,6 +312,28 @@ resource "digitalocean_droplet" "client-02" {
             "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
+}
+
+resource "null_resource" "scripts" {
+  provisioner "local-exec" {
+    command = <<CMD
+rm ./tunnel.sh
+echo "Creating ./tunnel.sh"
+
+cat > ./tunnel.sh <<EOF
+#!/bin/bash
+echo "Start SSH tunnel to ${digitalocean_droplet.server.0.ipv4_address}"
+ssh -N \\
+  -L 4646:${digitalocean_droplet.server.0.ipv4_address_private}:4646 \\
+  -L 9998:${digitalocean_droplet.server.0.ipv4_address_private}:9998 \\
+  -L 9999:${digitalocean_droplet.server.0.ipv4_address_private}:9999 \\
+  -L 8200:${digitalocean_droplet.server.0.ipv4_address_private}:8200 \\
+  -L 8500:localhost:8500 \\
+  root@${digitalocean_record.bastion.fqdn}
+EOF
+
+CMD
+  }
 }
 
 

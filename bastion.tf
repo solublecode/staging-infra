@@ -12,6 +12,13 @@ resource "digitalocean_droplet" "bastion" {
     lifecycle {
         create_before_destroy = true
     }
+
+    provisioner "remote-exec" {
+        inline = [
+            "sleep 360",
+            "/root/prepare.sh",
+        ]
+    }
 }
 
 resource "digitalocean_record" "bastion" {
@@ -25,7 +32,7 @@ resource "digitalocean_record" "bastion" {
 resource "digitalocean_record" "cockpit" {
     domain = data.digitalocean_domain.mapesa.name
     type   = "A"
-    name   = "cockpit"
+    name   = "cockpit-stg"
     value  = digitalocean_droplet.bastion.ipv4_address
     ttl    = 1800
 }
@@ -33,7 +40,7 @@ resource "digitalocean_record" "cockpit" {
 resource "digitalocean_record" "nginx-ui" {
     domain = data.digitalocean_domain.mapesa.name
     type   = "A"
-    name   = "nginx"
+    name   = "nginx-stg"
     value  = digitalocean_droplet.bastion.ipv4_address
     ttl    = 1800
 }

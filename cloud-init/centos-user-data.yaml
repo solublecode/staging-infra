@@ -5,9 +5,6 @@ users:
       sudo: ["ALL=(ALL) NOPASSWD:ALL"]
       groups: users,docker,wheel,adm,systemd-journal
       shell: /bin/bash
-      ssh_pwauth: True
-      ssh_authorized_keys:
-        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC99ASMMWsWlM+rU3c6UoU6BvlJr67X86WzFmFF//IeBWH1lv1Dccm3I7jYR7Pklr1M21cHdeoMakhPhH1xd/1Njj8DeFa/tJkpLiFc84qyIfensvXOhKJImpsRr0vvPruAUfm+RRtShLfDLqf42s6hSR5FWTTST4js/9CSEbrmEaCwDOfUVIlQuWmzaWL/tYF1HS6Z/FppAeswnXkDVsPUkXIMyKj5Bpgk5fbNgYoqK1t3iJehMM9dWAfGoD9ig1DiegnOUkN51DjCFEPQtdGcfaliv7M82soO1DVqTK7DZYyXU3Wmb82sy2GpDRWT0q9lJiaw8HHH805M2LzJ4Fty+Tc3b4l6QQCC8qhvgrzGBjbfbpYy3/yvgzfIMfeouDn9fXRmLCWfchRZIu9vcWCAsW6zzGyae2zlrzH/TLCd2BsWLmh3Rysu3hPzJTY8mvmal0Q2ZIxbtKOA5O5ZkYtHEfOo+s/5kD6Np9wOdKZDHOIhJRBk2TO7UgnRfA/jlA6pqYHA7/Q2348L/5KGQzn4o3DvKC03tFGUo4pc9mdSAOpPOi+e5vCi5tUPnSI34guw9K7DJ0waYDB7rTe+QxXi3lm6Lvu0qYB9QqACzEWyTzO18gjOhUU2lKBpV84oPeXD237mo7zvb7K4BBReHnLBrnDSoLlmlJxXUx5a3vOFfQ== collin@solublecode.dev
 chpasswd:
   list: |
      groot:groot
@@ -37,8 +34,8 @@ write_files:
       permissions: '0700'
       content: |
         #! /bin/bash
-        certbot-auto --nginx -n --email collin@solublecode.dev --agree-tos -d cockpit.solublecode.dev
-        certbot-auto --nginx -n --email collin@solublecode.dev --agree-tos -d nginx.solublecode.dev
+        certbot-auto --nginx -n --email collin@solublecode.dev --agree-tos -d cockpit-stg.solublecode.dev
+        certbot-auto --nginx -n --email collin@solublecode.dev --agree-tos -d nginx-stg.solublecode.dev
         dnf -y install firewalld
         systemctl enable --now firewalld
         firewall-cmd --permanent --zone=public --add-service=cockpit
@@ -53,14 +50,14 @@ write_files:
     - path: /etc/cockpit/cockpit.conf
       content: |
         [WebService]
-        Origins = https://cockpit.solublecode.dev wss://cockpit.solublecode.dev
+        Origins = https://cockpit-stg.solublecode.dev wss://cockpit-stg.solublecode.dev
         ProtocolHeader = X-Forwarded-Proto
-    - path: /etc/nginx/conf.d/nginx.solublecode.dev.conf
+    - path: /etc/nginx/conf.d/nginx-stg.solublecode.dev.conf
       content: |
         server {
             listen         80;
             listen         443 ssl;
-            server_name    nginx.solublecode.dev;
+            server_name    nginx-stg.solublecode.dev;
 
             location / {
                 proxy_pass http://127.0.0.1:8080/;
@@ -70,12 +67,12 @@ write_files:
             auth_basic_user_file /opt/nginx-ui/.htpasswd;
 
         }
-    - path: /etc/nginx/conf.d/cockpit.solublecode.dev.conf
+    - path: /etc/nginx/conf.d/cockpit-stg.solublecode.dev.conf
       content: |
         server {
             listen         80;
             listen         443 ssl;
-            server_name    cockpit.solublecode.dev;
+            server_name    cockpit-stg.solublecode.dev;
         
             location / {
                 # Required to proxy the connection to Cockpit

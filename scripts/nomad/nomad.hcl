@@ -32,11 +32,6 @@ consul {
   client_auto_join    = true
 }
 
-vault {
-  enabled = true
-  address = "http://__NOMAD_SERVER_IP_PRV__:8200"
-}
-
 telemetry {
   collection_interval        = "1s"
   disable_hostname           = true
