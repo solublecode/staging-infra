@@ -314,29 +314,6 @@ resource "digitalocean_droplet" "client-02" {
     }
 }
 
-resource "null_resource" "scripts" {
-  provisioner "local-exec" {
-    command = <<CMD
-rm ./tunnel.sh
-echo "Creating ./tunnel.sh"
-
-cat > ./tunnel.sh <<EOF
-#!/bin/bash
-echo "Start SSH tunnel to ${digitalocean_droplet.server.0.ipv4_address}"
-ssh -N \\
-  -L 4646:${digitalocean_droplet.server.0.ipv4_address_private}:4646 \\
-  -L 9998:${digitalocean_droplet.server.0.ipv4_address_private}:9998 \\
-  -L 9999:${digitalocean_droplet.server.0.ipv4_address_private}:9999 \\
-  -L 8200:${digitalocean_droplet.server.0.ipv4_address_private}:8200 \\
-  -L 8500:localhost:8500 \\
-  root@${digitalocean_record.bastion.fqdn}
-EOF
-
-CMD
-  }
-}
-
-
 resource "digitalocean_certificate" "mapesa" {
     name    = "${var.name}-certificate"
     type    = "lets_encrypt"
