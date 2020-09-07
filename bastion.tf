@@ -12,20 +12,6 @@ resource "digitalocean_droplet" "bastion" {
     lifecycle {
         create_before_destroy = true
     }
-
-    connection {
-        type                 = "ssh"
-        user                 = "root"
-        host                 = self.ipv4_address_private
-        private_key          = var.ssh_private_key
-    }
-
-    provisioner "remote-exec" {
-        inline = [
-            "sleep 240",
-            "/root/prepare.sh",
-        ]
-    }
 }
 
 resource "digitalocean_record" "bastion" {
