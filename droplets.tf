@@ -18,6 +18,7 @@ resource "digitalocean_droplet" "server" {
         type                 = "ssh"
         user                 = "root"
         host                 = self.ipv4_address_private
+        timeout              = "10m"
         private_key          = var.ssh_private_key
         bastion_user         = "root"
         bastion_host         = digitalocean_droplet.bastion.ipv4_address
@@ -149,6 +150,7 @@ resource "digitalocean_droplet" "client-01" {
         type                 = "ssh"
         user                 = "root"
         host                 = self.ipv4_address_private
+        timeout              = "10m"
         private_key          = var.ssh_private_key
         bastion_user         = "root"
         bastion_host         = digitalocean_droplet.bastion.ipv4_address
@@ -241,6 +243,7 @@ resource "digitalocean_droplet" "client-02" {
         type                 = "ssh"
         user                 = "root"
         host                 = self.ipv4_address_private
+        timeout              = "10m"
         private_key          = var.ssh_private_key
         bastion_user         = "root"
         bastion_host         = digitalocean_droplet.bastion.ipv4_address

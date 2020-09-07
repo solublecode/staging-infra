@@ -22,7 +22,7 @@ resource "digitalocean_droplet" "bastion" {
 
     provisioner "remote-exec" {
         inline = [
-            "sleep 360",
+            "sleep 200",
             "/root/prepare.sh",
         ]
     }
