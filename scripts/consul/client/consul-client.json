@@ -4,6 +4,11 @@
   "node_name": "__CLIENT_NAME__",
   "log_level": "INFO",
   "server": false,
-  "bind_addr": "__SERVER_IP_PRV__",
-  "rejoin_after_leave": true
+  "bind_addr": "__CLIENT_IP_PRV__",
+  "rejoin_after_leave": true,
+  "retry_join": [
+    "__SERVER01_IP_PRV__", 
+    "__SERVER02_IP_PRV__", 
+    "__SERVER03_IP_PRV__"
+  ]
 }
