@@ -29,7 +29,7 @@ resource "digitalocean_droplet" "server" {
         inline = [
             "mkdir -p /root/consul/data/server",
             "mkdir -p /root/consul/data/client",
-            "sleep 200",
+            "sleep 360",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -272,6 +272,9 @@ resource "digitalocean_droplet" "client-02" {
             "chmod +x /tmp/install_consul.sh",
             "sed -i 's/__CLIENT_NAME__/consul-client-03/g' /root/consul/consul-client.json",
             "sed -i 's/__CLIENT_IP_PRV__/${self.ipv4_address_private}/g' /root/consul/consul-client.json",
+            "sed -i 's/__SERVER01_IP_PRV__/${digitalocean_droplet.server.0.ipv4_address_private}/g' /root/consul/consul-client.json",
+            "sed -i 's/__SERVER02_IP_PRV__/${digitalocean_droplet.server.1.ipv4_address_private}/g' /root/consul/consul-client.json",
+            "sed -i 's/__SERVER03_IP_PRV__/${digitalocean_droplet.server.2.ipv4_address_private}/g' /root/consul/consul-client.json",
             "/tmp/install_consul.sh",
         ]
     }
