@@ -18,6 +18,7 @@ resource "digitalocean_droplet" "server" {
         type                 = "ssh"
         user                 = "root"
         host                 = self.ipv4_address_private
+        timeout              = "10m"
         private_key          = var.ssh_private_key
         bastion_user         = "root"
         bastion_host         = digitalocean_droplet.bastion.ipv4_address
@@ -26,10 +27,9 @@ resource "digitalocean_droplet" "server" {
 
     provisioner "remote-exec" {
         inline = [
-            "mkdir -p /root/consul/data",
-            "mkdir -p /root/nomad/data",
-            "mkdir -p /root/vault/data",
-            "sleep 360",
+            "sleep 180",
+            "apt install unzip",
+            "mkdir -p /root/consul/data/server",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -40,23 +40,25 @@ resource "digitalocean_droplet" "server" {
         destination = "/tmp/install_consul.sh"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul.hcl"
-        destination = "/root/consul/consul.hcl"
+        source      = "${path.root}/scripts/consul/server/consul-server.json"
+        destination = "/root/consul/consul-server.json"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul.service"
-        destination = "/etc/systemd/system/consul.service"
+        source      = "${path.root}/scripts/consul/server/consul-server.service"
+        destination = "/etc/systemd/system/consul-server.service"
     }
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/install_consul.sh",
-            "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/consul/consul.hcl",
-            "sed -i 's/__CLUSTER_SIZE__/${var.server_droplet_count}/g' /root/consul/consul.hcl",
-            "/tmp/install_consul.sh",
+            "sed -i 's/__SERVER_NAME__/consul-server-0${count.index + 1}/g' /root/consul/consul-server.json",
+            "sed -i 's/__CLUSTER_SIZE__/${var.server_droplet_count}/g' /root/consul/consul-server.json",
+            "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/consul/consul-server.json",
+            "/tmp/install_consul.sh server",
         ]
     }
     provisioner "remote-exec" {
         inline = [
+            "sleep 10",
             "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
@@ -76,44 +78,55 @@ resource "digitalocean_droplet" "server" {
         source      = "${path.root}/scripts/vault/vault.service"
         destination = "/etc/systemd/system/vault.service"
     }
+    provisioner "file" {
+        source      = "${path.root}/scripts/vault/setup_vault.sh"
+        destination = "/tmp/setup_vault.sh"
+    }
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/install_vault.sh",
-            "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /etc/vault.d/vault.hcl",
+            "export VAULT_ADDR=http://127.0.0.1:8200",
             "/tmp/install_vault.sh",
+        ]
+    }
+    provisioner "remote-exec" {
+        inline = [
+            "chmod +x /tmp/setup_vault.sh",
+            "export VAULT_ADDR=http://127.0.0.1:8200",
+            "/tmp/setup_vault.sh ${count.index}",
         ]
     }
 
     # ~~~~~~~~~~~~~ #
     # Install Nomad #
     # ~~~~~~~~~~~~~ #
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/install_nomad.sh"
-        destination = "/tmp/install_nomad.sh"
-    }
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/nomad.hcl"
-        destination = "/root/nomad/nomad.hcl"
-    }
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/nomad.service"
-        destination = "/etc/systemd/system/nomad.service"
-    }
-    provisioner "remote-exec" {
-        inline = [
-            "chmod +x /tmp/install_nomad.sh",
-            "sed -i 's/__NOMAD_SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
-            "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
-            "sed -i 's/__CLUSTER_SIZE__/${var.server_droplet_count}/g' /root/nomad/nomad.hcl",
-            "/tmp/install_nomad.sh",
-        ]
-    }
-    provisioner "remote-exec" {
-        inline = [
-            "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
-            "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
-        ]
-    }
+    // provisioner "file" {
+    //     source      = "${path.root}/scripts/nomad/install_nomad.sh"
+    //     destination = "/tmp/install_nomad.sh"
+    // }
+    // provisioner "file" {
+    //     source      = "${path.root}/scripts/nomad/nomad.hcl"
+    //     destination = "/root/nomad/nomad.hcl"
+    // }
+    // provisioner "file" {
+    //     source      = "${path.root}/scripts/nomad/nomad.service"
+    //     destination = "/etc/systemd/system/nomad.service"
+    // }
+    // provisioner "remote-exec" {
+    //     inline = [
+    //         "chmod +x /tmp/install_nomad.sh",
+    //         "sed -i 's/__NOMAD_SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
+    //         "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
+    //         "sed -i 's/__CLUSTER_SIZE__/${var.server_droplet_count}/g' /root/nomad/nomad.hcl",
+    //         "/tmp/install_nomad.sh",
+    //     ]
+    // }
+    // provisioner "remote-exec" {
+    //     inline = [
+    //         "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
+    //         "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
+    //     ]
+    // }
 
 }
 
@@ -137,6 +150,7 @@ resource "digitalocean_droplet" "client-01" {
         type                 = "ssh"
         user                 = "root"
         host                 = self.ipv4_address_private
+        timeout              = "10m"
         private_key          = var.ssh_private_key
         bastion_user         = "root"
         bastion_host         = digitalocean_droplet.bastion.ipv4_address
@@ -145,10 +159,9 @@ resource "digitalocean_droplet" "client-01" {
 
     provisioner "remote-exec" {
         inline = [
-            "mkdir -p /root/consul/data",
-            "mkdir -p /root/nomad/data",
-            "mkdir -p /root/vault/data",
-            "sleep 360",
+            "sleep 180",
+            "apt install unzip",
+            "mkdir -p /root/consul/data/client",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -159,55 +172,55 @@ resource "digitalocean_droplet" "client-01" {
         destination = "/tmp/install_consul.sh"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul.hcl"
-        destination = "/root/consul/consul.hcl"
+        source      = "${path.root}/scripts/consul/client/consul-client.json"
+        destination = "/root/consul/consul-client.json"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul.service"
-        destination = "/etc/systemd/system/consul.service"
+        source      = "${path.root}/scripts/consul/client/consul-client.service"
+        destination = "/etc/systemd/system/consul-client.service"
     }
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/install_consul.sh",
+            "sed -i 's/__CLIENT_NAME__/consul-client-0${count.index + 1}/g' /root/consul/consul-client.json",
+            "sed -i 's/__CLIENT_IP_PRV__/${self.ipv4_address_private}/g' /root/consul/consul-client.json",
+            "sed -i 's/__SERVER01_IP_PRV__/${digitalocean_droplet.server.0.ipv4_address_private}/g' /root/consul/consul-client.json",
+            "sed -i 's/__SERVER02_IP_PRV__/${digitalocean_droplet.server.1.ipv4_address_private}/g' /root/consul/consul-client.json",
+            "sed -i 's/__SERVER03_IP_PRV__/${digitalocean_droplet.server.2.ipv4_address_private}/g' /root/consul/consul-client.json",
             "/tmp/install_consul.sh",
-        ]
-    }
-    provisioner "remote-exec" {
-        inline = [
-            "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
 
     # ~~~~~~~~~~~~~ #
     # Install Nomad #
     # ~~~~~~~~~~~~~ #
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/install_nomad.sh"
-        destination = "/tmp/install_nomad.sh"
-    }
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/nomad.hcl"
-        destination = "/root/nomad/nomad.hcl"
-    }
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/nomad.service"
-        destination = "/etc/systemd/system/nomad.service"
-    }
-    provisioner "remote-exec" {
-        inline = [
-            "chmod +x /tmp/install_nomad.sh",
-            "sed -i 's/__NOMAD_SERVER_IP_PRV__/${digitalocean_droplet.server.0.ipv4_address_private}/g' /root/nomad/nomad.hcl",
-            "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
-            "sed -i 's/__CLUSTER_SIZE__/${var.client_droplet_count}/g' /root/nomad/nomad.hcl",
-            "/tmp/install_nomad.sh",
-        ]
-    }
-    provisioner "remote-exec" {
-        inline = [
-            "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
-            "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
-        ]
-    }
+    // provisioner "file" {
+    //     source      = "${path.root}/scripts/nomad/install_nomad.sh"
+    //     destination = "/tmp/install_nomad.sh"
+    // }
+    // provisioner "file" {
+    //     source      = "${path.root}/scripts/nomad/nomad.hcl"
+    //     destination = "/root/nomad/nomad.hcl"
+    // }
+    // provisioner "file" {
+    //     source      = "${path.root}/scripts/nomad/nomad.service"
+    //     destination = "/etc/systemd/system/nomad.service"
+    // }
+    // provisioner "remote-exec" {
+    //     inline = [
+    //         "chmod +x /tmp/install_nomad.sh",
+    //         "sed -i 's/__NOMAD_SERVER_IP_PRV__/${digitalocean_droplet.server.0.ipv4_address_private}/g' /root/nomad/nomad.hcl",
+    //         "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
+    //         "sed -i 's/__CLUSTER_SIZE__/${var.client_droplet_count}/g' /root/nomad/nomad.hcl",
+    //         "/tmp/install_nomad.sh",
+    //     ]
+    // }
+    // provisioner "remote-exec" {
+    //     inline = [
+    //         "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
+    //         "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
+    //     ]
+    // }
 }
 
 resource "digitalocean_droplet" "client-02" {
@@ -229,6 +242,7 @@ resource "digitalocean_droplet" "client-02" {
         type                 = "ssh"
         user                 = "root"
         host                 = self.ipv4_address_private
+        timeout              = "10m"
         private_key          = var.ssh_private_key
         bastion_user         = "root"
         bastion_host         = digitalocean_droplet.bastion.ipv4_address
@@ -237,10 +251,9 @@ resource "digitalocean_droplet" "client-02" {
 
     provisioner "remote-exec" {
         inline = [
-            "mkdir -p /root/consul/data",
-            "mkdir -p /root/nomad/data",
-            "mkdir -p /root/vault/data",
-            "sleep 360",
+            "sleep 180",
+            "apt install unzip",
+            "mkdir -p /root/consul/data/client",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -251,57 +264,56 @@ resource "digitalocean_droplet" "client-02" {
         destination = "/tmp/install_consul.sh"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul.hcl"
-        destination = "/root/consul/consul.hcl"
+        source      = "${path.root}/scripts/consul/client/consul-client.json"
+        destination = "/root/consul/consul-client.json"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul.service"
-        destination = "/etc/systemd/system/consul.service"
+        source      = "${path.root}/scripts/consul/client/consul-client.service"
+        destination = "/etc/systemd/system/consul-client.service"
     }
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/install_consul.sh",
+            "sed -i 's/__CLIENT_NAME__/consul-client-03/g' /root/consul/consul-client.json",
+            "sed -i 's/__CLIENT_IP_PRV__/${self.ipv4_address_private}/g' /root/consul/consul-client.json",
+            "sed -i 's/__SERVER01_IP_PRV__/${digitalocean_droplet.server.0.ipv4_address_private}/g' /root/consul/consul-client.json",
+            "sed -i 's/__SERVER02_IP_PRV__/${digitalocean_droplet.server.1.ipv4_address_private}/g' /root/consul/consul-client.json",
+            "sed -i 's/__SERVER03_IP_PRV__/${digitalocean_droplet.server.2.ipv4_address_private}/g' /root/consul/consul-client.json",
             "/tmp/install_consul.sh",
-        ]
-    }
-    provisioner "remote-exec" {
-        inline = [
-            "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
 
     # ~~~~~~~~~~~~~ #
     # Install Nomad #
     # ~~~~~~~~~~~~~ #
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/install_nomad.sh"
-        destination = "/tmp/install_nomad.sh"
-    }
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/nomad.hcl"
-        destination = "/root/nomad/nomad.hcl"
-    }
-    provisioner "file" {
-        source      = "${path.root}/scripts/nomad/nomad.service"
-        destination = "/etc/systemd/system/nomad.service"
-    }
-    provisioner "remote-exec" {
-        inline = [
-            "chmod +x /tmp/install_nomad.sh",
-            "sed -i 's/__NOMAD_SERVER_IP_PRV__/${digitalocean_droplet.server.0.ipv4_address_private}/g' /root/nomad/nomad.hcl",
-            "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
-            "sed -i 's/__CLUSTER_SIZE__/${var.client_droplet_count}/g' /root/nomad/nomad.hcl",
-            "/tmp/install_nomad.sh",
-        ]
-    }
-    provisioner "remote-exec" {
-        inline = [
-            "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
-            "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
-        ]
-    }
+    // provisioner "file" {
+    //     source      = "${path.root}/scripts/nomad/install_nomad.sh"
+    //     destination = "/tmp/install_nomad.sh"
+    // }
+    // provisioner "file" {
+    //     source      = "${path.root}/scripts/nomad/nomad.hcl"
+    //     destination = "/root/nomad/nomad.hcl"
+    // }
+    // provisioner "file" {
+    //     source      = "${path.root}/scripts/nomad/nomad.service"
+    //     destination = "/etc/systemd/system/nomad.service"
+    // }
+    // provisioner "remote-exec" {
+    //     inline = [
+    //         "chmod +x /tmp/install_nomad.sh",
+    //         "sed -i 's/__NOMAD_SERVER_IP_PRV__/${digitalocean_droplet.server.0.ipv4_address_private}/g' /root/nomad/nomad.hcl",
+    //         "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/nomad/nomad.hcl",
+    //         "sed -i 's/__CLUSTER_SIZE__/${var.client_droplet_count}/g' /root/nomad/nomad.hcl",
+    //         "/tmp/install_nomad.sh",
+    //     ]
+    // }
+    // provisioner "remote-exec" {
+    //     inline = [
+    //         "export NOMAD_ADDR=http://${digitalocean_droplet.server.0.ipv4_address_private}:4646",
+    //         "nomad server join ${digitalocean_droplet.server.0.ipv4_address_private}",
+    //     ]
+    // }
 }
-
 
 resource "digitalocean_certificate" "mapesa" {
     name    = "${var.name}-certificate"
@@ -418,5 +430,5 @@ resource "digitalocean_record" "mapesa" {
     type   = "A"
     name   = var.subdomain
     value  = digitalocean_loadbalancer.mapesa.ip
-    ttl    = 1800
+    ttl    = 30
 }

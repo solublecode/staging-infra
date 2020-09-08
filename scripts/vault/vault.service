@@ -3,7 +3,7 @@ Description="HashiCorp Vault - A tool for managing secrets"
 Documentation=https://www.vaultproject.io/docs/
 Requires=network-online.target
 After=network-online.target
-ConditionFileNotEmpty=/root/vault.hcl
+ConditionFileNotEmpty=/root/vault/vault.hcl
 StartLimitIntervalSec=60
 StartLimitBurst=3
 

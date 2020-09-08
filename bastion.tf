@@ -19,21 +19,21 @@ resource "digitalocean_record" "bastion" {
     type   = "A"
     name   = "sh"
     value  = digitalocean_droplet.bastion.ipv4_address
-    ttl    = 1800
+    ttl    = 30
 }
 
 resource "digitalocean_record" "cockpit" {
     domain = data.digitalocean_domain.mapesa.name
     type   = "A"
-    name   = "cockpit"
+    name   = "cockpit-stg"
     value  = digitalocean_droplet.bastion.ipv4_address
-    ttl    = 1800
+    ttl    = 30
 }
 
 resource "digitalocean_record" "nginx-ui" {
     domain = data.digitalocean_domain.mapesa.name
     type   = "A"
-    name   = "nginx"
+    name   = "nginx-stg"
     value  = digitalocean_droplet.bastion.ipv4_address
-    ttl    = 1800
+    ttl    = 30
 }

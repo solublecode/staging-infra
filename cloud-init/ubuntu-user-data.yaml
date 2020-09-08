@@ -2,10 +2,6 @@
 package_update: true
 package_upgrade: true
 packages:
-    - unzip
     - net-tools
     - docker.io
     - openjdk-14-jre-headless
-bootcmd:
-    - ifdown eth0
-    
