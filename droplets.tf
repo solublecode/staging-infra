@@ -42,12 +42,12 @@ resource "digitalocean_droplet" "server" {
         destination = "/tmp/install_consul.sh"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul-server.json"
+        source      = "${path.root}/scripts/consul/server/consul-server.json"
         destination = "/root/consul/consul-server.json"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul.service"
-        destination = "/etc/systemd/system/consul.service"
+        source      = "${path.root}/scripts/consul/server/consul-server.service"
+        destination = "/etc/systemd/system/consul-server.service"
     }
     provisioner "remote-exec" {
         inline = [
@@ -55,12 +55,7 @@ resource "digitalocean_droplet" "server" {
             "sed -i 's/__SERVER_NAME__/consul-server-0${count.index + 1}/g' /root/consul/consul-server.json",
             "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/consul/consul-server.json",
             "sed -i 's/__CLUSTER_SIZE__/${var.server_droplet_count}/g' /root/consul/consul-server.json",
-            "/tmp/install_consul.sh",
-        ]
-    }
-    provisioner "remote-exec" {
-        inline = [
-            "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
+            "/tmp/install_consul.sh server",
         ]
     }
 
@@ -174,12 +169,12 @@ resource "digitalocean_droplet" "client-01" {
         destination = "/tmp/install_consul.sh"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul-client.json"
+        source      = "${path.root}/scripts/consul/client/consul-client.json"
         destination = "/root/consul/consul-client.json"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul.service"
-        destination = "/etc/systemd/system/consul.service"
+        source      = "${path.root}/scripts/consul/client/consul-client.service"
+        destination = "/etc/systemd/system/consul-client.service"
     }
     provisioner "remote-exec" {
         inline = [
@@ -269,12 +264,12 @@ resource "digitalocean_droplet" "client-02" {
         destination = "/tmp/install_consul.sh"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul-client.json"
+        source      = "${path.root}/scripts/consul/client/consul-client.json"
         destination = "/root/consul/consul-client.json"
     }
     provisioner "file" {
-        source      = "${path.root}/scripts/consul/consul.service"
-        destination = "/etc/systemd/system/consul.service"
+        source      = "${path.root}/scripts/consul/client/consul-client.service"
+        destination = "/etc/systemd/system/consul-client.service"
     }
     provisioner "remote-exec" {
         inline = [

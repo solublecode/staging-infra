@@ -17,7 +17,12 @@ complete -C /usr/local/bin/consul consul
 # export CONSUL_HTTP_TOKEN=${acl_token}
 
 # Start consul as a service
-systemctl enable consul.service
-systemctl start consul.service
+if [ $1 == "server" ]; then
+    systemctl enable consul-server.service
+    systemctl start consul-server.service
+else
+    systemctl enable consul-client.service
+    systemctl start consul-client.service
+fi
 echo "Installation of Consul complete"
 exit 0
