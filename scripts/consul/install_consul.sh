@@ -11,6 +11,11 @@ rm consul_1.8.3_linux_amd64.zip
 consul -autocomplete-install
 complete -C /usr/local/bin/consul consul
 
+# bootstrap acl token
+# consul acl bootstrap > /root/consul/acl.txt
+# acl_token=`grep "SecretID:" /root/consul/acl.txt | cut -d' ' -f4`
+# export CONSUL_HTTP_TOKEN=${acl_token}
+
 # Start consul as a service
 systemctl enable consul.service
 systemctl start consul.service

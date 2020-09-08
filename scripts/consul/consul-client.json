@@ -1,0 +1,9 @@
+{
+  "datacenter": "solublecode-dc01",
+  "data_dir": "/root/consul/data/client",
+  "node_name": "__CLIENT_NAME__",
+  "log_level": "INFO",
+  "server": false,
+  "bind_addr": "__SERVER_IP_PRV__",
+  "rejoin_after_leave": true
+}
