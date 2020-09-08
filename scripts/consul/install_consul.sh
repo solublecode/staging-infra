@@ -13,10 +13,6 @@ complete -C /usr/local/bin/consul consul
 
 # Start consul as a service
 if [ $1 == "server" ]; then
-    # bootstrap acl token
-    consul acl bootstrap > /root/consul/acl.txt
-    # acl_token=`grep "SecretID:" /root/consul/acl.txt | cut -d' ' -f4`
-    # export CONSUL_HTTP_TOKEN=${acl_token}
     systemctl enable consul-server.service
     systemctl start consul-server.service
 else

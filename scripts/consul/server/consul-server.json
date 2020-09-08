@@ -10,11 +10,13 @@
   "connect" : {
     "enabled": true
   },
-  "acl": {
-    "enabled": true
-  },
   "leave_on_terminate": false,
   "skip_leave_on_interrupt": true,
   "rejoin_after_leave": true,
-  "retry_interval": "30s"
+  "retry_interval": "30s",
+  "retry_join": [
+    "__SERVER01_IP_PRV__:8301",
+    "__SERVER02_IP_PRV__:8301",
+    "__SERVER03_IP_PRV__:8301"
+  ]
 }
