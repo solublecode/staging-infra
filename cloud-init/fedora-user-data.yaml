@@ -8,5 +8,4 @@ runcmd:
     - groupadd docker
     - usermod -aG docker $USER
     - systemctl enable --now docker
-bootcmd:
-    - ifdown eth0
+    - ifdown eth0    

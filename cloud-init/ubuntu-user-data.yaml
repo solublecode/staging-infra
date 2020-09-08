@@ -6,7 +6,5 @@ packages:
     - net-tools
     - docker.io
     - openjdk-14-jre-headless
-    - reboot
-bootcmd:
-    - ifdown eth0
+    - ifdown eth0    
     
