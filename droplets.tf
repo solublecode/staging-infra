@@ -53,7 +53,7 @@ resource "digitalocean_droplet" "server" {
             "sed -i 's/__SERVER_NAME__/consul-server-0${count.index + 1}/g' /root/consul/consul-server.json",
             "sed -i 's/__CLUSTER_SIZE__/${var.server_droplet_count}/g' /root/consul/consul-server.json",
             "sed -i 's/__SERVER_IP_PRV__/${self.ipv4_address_private}/g' /root/consul/consul-server.json",
-            "sed -i 's/__SERVER01_IP_PRV__/${digitalocean_droplet.server.0.ipv4_address_private}/g' /root/consul/consul-server.json",
+            "sed -i 's/__SERVER01_IP_PRV__/${self.ipv4_address_private}/g' /root/consul/consul-server.json",
             "sed -i 's/__SERVER02_IP_PRV__/${digitalocean_droplet.server.1.ipv4_address_private}/g' /root/consul/consul-server.json",
             "sed -i 's/__SERVER03_IP_PRV__/${digitalocean_droplet.server.2.ipv4_address_private}/g' /root/consul/consul-server.json",
             "/tmp/install_consul.sh server",
