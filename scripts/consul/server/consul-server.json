@@ -5,6 +5,7 @@
   "log_level": "INFO",
   "server": true,
   "bind_addr": "__SERVER_IP_PRV__",
+  "client_addr": "__SERVER_IP_PRV__",
   "bootstrap_expect": __CLUSTER_SIZE__,
   "ui": true,
   "connect" : {

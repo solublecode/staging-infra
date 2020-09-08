@@ -66,36 +66,36 @@ resource "digitalocean_droplet" "server" {
     # ~~~~~~~~~~~~~ #
     # Install Vault #
     # ~~~~~~~~~~~~~ #
-    // provisioner "file" {
-    //     source      = "${path.root}/scripts/vault/install_vault.sh"
-    //     destination = "/tmp/install_vault.sh"
-    // }
-    // provisioner "file" {
-    //     source      = "${path.root}/scripts/vault/vault.hcl"
-    //     destination = "/root/vault/vault.hcl"
-    // }
-    // provisioner "file" {
-    //     source      = "${path.root}/scripts/vault/vault.service"
-    //     destination = "/etc/systemd/system/vault.service"
-    // }
-    // provisioner "file" {
-    //     source      = "${path.root}/scripts/vault/setup_vault.sh"
-    //     destination = "/tmp/setup_vault.sh"
-    // }
-    // provisioner "remote-exec" {
-    //     inline = [
-    //         "chmod +x /tmp/install_vault.sh",
-    //         "export VAULT_ADDR=http://127.0.0.1:8200",
-    //         "/tmp/install_vault.sh",
-    //     ]
-    // }
-    // provisioner "remote-exec" {
-    //     inline = [
-    //         "chmod +x /tmp/setup_vault.sh",
-    //         "export VAULT_ADDR=http://127.0.0.1:8200",
-    //         "/tmp/setup_vault.sh ${count.index}",
-    //     ]
-    // }
+    provisioner "file" {
+        source      = "${path.root}/scripts/vault/install_vault.sh"
+        destination = "/tmp/install_vault.sh"
+    }
+    provisioner "file" {
+        source      = "${path.root}/scripts/vault/vault.hcl"
+        destination = "/root/vault/vault.hcl"
+    }
+    provisioner "file" {
+        source      = "${path.root}/scripts/vault/vault.service"
+        destination = "/etc/systemd/system/vault.service"
+    }
+    provisioner "file" {
+        source      = "${path.root}/scripts/vault/setup_vault.sh"
+        destination = "/tmp/setup_vault.sh"
+    }
+    provisioner "remote-exec" {
+        inline = [
+            "chmod +x /tmp/install_vault.sh",
+            "export VAULT_ADDR=http://127.0.0.1:8200",
+            "/tmp/install_vault.sh",
+        ]
+    }
+    provisioner "remote-exec" {
+        inline = [
+            "chmod +x /tmp/setup_vault.sh",
+            "export VAULT_ADDR=http://127.0.0.1:8200",
+            "/tmp/setup_vault.sh ${count.index}",
+        ]
+    }
 
     # ~~~~~~~~~~~~~ #
     # Install Nomad #
