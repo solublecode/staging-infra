@@ -27,9 +27,9 @@ resource "digitalocean_droplet" "server" {
 
     provisioner "remote-exec" {
         inline = [
-            "mkdir -p /root/consul/data/server",
-            "mkdir -p /root/consul/data/client",
             "sleep 360",
+            "apt install unzip",
+            "mkdir -p /root/consul/data/server",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -153,10 +153,9 @@ resource "digitalocean_droplet" "client-01" {
 
     provisioner "remote-exec" {
         inline = [
-            "mkdir -p /root/consul/data",
-            "mkdir -p /root/nomad/data",
-            "mkdir -p /root/vault/data",
             "sleep 360",
+            "apt install unzip",
+            "mkdir -p /root/consul/data/client",
         ]
     }
     # ~~~~~~~~~~~~~~ #
@@ -246,10 +245,9 @@ resource "digitalocean_droplet" "client-02" {
 
     provisioner "remote-exec" {
         inline = [
-            "mkdir -p /root/consul/data",
-            "mkdir -p /root/nomad/data",
-            "mkdir -p /root/vault/data",
             "sleep 360",
+            "apt install unzip",
+            "mkdir -p /root/consul/data/client",
         ]
     }
     # ~~~~~~~~~~~~~~ #
