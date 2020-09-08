@@ -58,6 +58,7 @@ resource "digitalocean_droplet" "server" {
     }
     provisioner "remote-exec" {
         inline = [
+            "sleep 10",
             "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
@@ -279,11 +280,6 @@ resource "digitalocean_droplet" "client-02" {
             "sed -i 's/__SERVER02_IP_PRV__/${digitalocean_droplet.server.1.ipv4_address_private}/g' /root/consul/consul-client.json",
             "sed -i 's/__SERVER03_IP_PRV__/${digitalocean_droplet.server.2.ipv4_address_private}/g' /root/consul/consul-client.json",
             "/tmp/install_consul.sh",
-        ]
-    }
-    provisioner "remote-exec" {
-        inline = [
-            "consul join ${digitalocean_droplet.server.0.ipv4_address_private}",
         ]
     }
 

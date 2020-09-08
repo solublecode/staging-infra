@@ -4,4 +4,4 @@ package_upgrade: true
 packages:
     - net-tools
     - docker.io
-    - openjdk-14-jre-headless    
+    - openjdk-14-jre-headless
